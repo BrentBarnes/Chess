@@ -6,12 +6,17 @@ require 'miscellaneous'
 class Board
   include Miscellaneous
 
-  attr_accessor :board, :p1_graveyard, :p2_graveyard
+  attr_accessor :board, :coordinate, :p1_graveyard, :p2_graveyard
 
-  def initialize
-    @board = Array.new(8) {Array.new(8) {"   "}}
+  def initialize(coordinate)
+    @board = Array.new(8) {Array.new(8)}
+    @coordinate = coordinate
     @p1_graveyard = []
     @p2_graveyard = []
+  end
+
+  def create_board_spaces
+
   end
 
   def print_board
@@ -36,26 +41,26 @@ class Board
     puts "   a  b  c  d  e  f  g  h"
   end
 
-  def set_piece(color_letter, piece_name, coordinate)
-    row = selection_to_array_row(coordinate)
-    column = selection_to_array_column(coordinate)
-    piece = create_piece(color_letter, piece_name)
+  # def set_piece(color_letter, piece_name, coordinate)
+  #   row = selection_to_array_row(coordinate)
+  #   column = selection_to_array_column(coordinate)
+  #   piece = create_piece(color_letter, piece_name)
 
-    @board[row][column] = " #{piece} "
-  end
+  #   @board[row][column] = " #{piece} "
+  # end
 
-  def clear_piece(coordinate)
-    row = selection_to_array_row(coordinate)
-    column = selection_to_array_column(coordinate)
+  # def clear_piece(coordinate)
+  #   row = selection_to_array_row(coordinate)
+  #   column = selection_to_array_column(coordinate)
 
-    @board[row][column] = "   "
-  end
+  #   @board[row][column] = "   "
+  # end
 
-  def space_empty?(coordinate)
-    row = selection_to_array_row(coordinate)
-    column = selection_to_array_column(coordinate)
-    empty = '   '
-    board[row][column] == empty ? true : false
-  end
+  # def space_empty?(coordinate)
+  #   row = selection_to_array_row(coordinate)
+  #   column = selection_to_array_column(coordinate)
+  #   empty = '   '
+  #   board[row][column] == empty ? true : false
+  # end
 
 end

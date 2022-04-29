@@ -50,17 +50,17 @@ class Game
     turn % 2 == 1 ? true : false
   end
 
-  def get_name_of_piece(coordinate)
-    piece = get_piece_on_space(coordinate)
-    @@all_pieces.each do |key, value|
-      if value == piece then return key.to_s end
-    end
-  end
+  # def get_name_of_piece(coordinate)
+  #   piece = get_piece_on_space(coordinate)
+  #   @@all_pieces.each do |key, value|
+  #     if value == piece then return key.to_s end
+  #   end
+  # end
 
-  def get_piece_on_space(coordinate)
-    space = select_space(coordinate)
-    space[1]
-  end
+  # def get_piece_on_space(coordinate)
+  #   space = select_space(coordinate)
+  #   space[1]
+  # end
 
   def send_piece_to_graveyard(coordinate)
     piece = get_piece_on_space(coordinate)
