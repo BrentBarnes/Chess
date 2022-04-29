@@ -115,34 +115,6 @@ describe Game do
     end
   end
 
-  # describe '#get_piece_on_space' do
-  #   subject(:game) { described_class.new(Board.new) }
-  #   context 'when a white pawn is on the space' do
-  #     it 'returns just the white pawn' do
-  #       set_piece('w', 'pawn', 'd2')
-  #       pawn = "\u265F".encode('utf-8')
-  #       expect(game.get_piece_on_space('d2')).to eq(pawn)
-  #     end
-  #   end
-  # end
-
-  # describe '#get_name_of_piece' do
-  #   subject(:game) { described_class.new(Board.new) }
-  #   context 'when piece on the board is a white pawn' do
-  #     it 'returns w_pawn' do
-  #       set_piece('w', 'pawn', 'e4')
-  #       expect(game.get_name_of_piece('e4')).to eq('w_pawn')
-  #     end
-  #   end
-
-  #   context 'when piece on the board is a black pawn' do
-  #     it 'returns b_pawn' do
-  #       set_piece('b', 'pawn', 'e4')
-  #       expect(game.get_name_of_piece('e4')).to eq('b_pawn')
-  #     end
-  #   end
-  # end
-
   describe '#send_piece_to_graveyard' do
     subject(:game) { described_class.new(Board.new) }
     context 'when the coordinate of a white piece is passed in' do

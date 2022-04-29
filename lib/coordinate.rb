@@ -4,7 +4,7 @@ require 'miscellaneous'
 class Coordinate
   include Miscellaneous
 
-  attr_accessor :row, :column, :content, :piece
+  attr_accessor :row, :column, :content, :name, :piece
 
   def initialize(row, column)
     @row = row
@@ -36,8 +36,9 @@ class Coordinate
   def get_name_of_piece
     symbol = get_piece_on_space
     @@all_pieces.each do |key, value|
-      if value == symbol then @piece = key.to_s else nil end
+      if value == symbol then @piece = key.to_s end
     end
+    nil
   end
 
   def get_piece_on_space

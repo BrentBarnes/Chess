@@ -1,22 +1,26 @@
 
 require 'colorize'
 require 'pry'
-require 'miscellaneous'
+require_relative 'miscellaneous'
+require_relative 'coordinate'
 
 class Board
   include Miscellaneous
 
   attr_accessor :board, :coordinate, :p1_graveyard, :p2_graveyard
 
-  def initialize(coordinate)
+  def initialize
     @board = Array.new(8) {Array.new(8)}
-    @coordinate = coordinate
     @p1_graveyard = []
     @p2_graveyard = []
   end
 
   def create_board_spaces
-
+    board.each_with_index do |row, row_index|
+      row.each_with_index do |space, column_index|
+      board[row_index][column_index] = Coordinate.new(row_index, column_index)
+      end
+    end
   end
 
   def print_board
@@ -41,26 +45,8 @@ class Board
     puts "   a  b  c  d  e  f  g  h"
   end
 
-  # def set_piece(color_letter, piece_name, coordinate)
-  #   row = selection_to_array_row(coordinate)
-  #   column = selection_to_array_column(coordinate)
-  #   piece = create_piece(color_letter, piece_name)
-
-  #   @board[row][column] = " #{piece} "
-  # end
-
-  # def clear_piece(coordinate)
-  #   row = selection_to_array_row(coordinate)
-  #   column = selection_to_array_column(coordinate)
-
-  #   @board[row][column] = "   "
-  # end
-
-  # def space_empty?(coordinate)
-  #   row = selection_to_array_row(coordinate)
-  #   column = selection_to_array_column(coordinate)
-  #   empty = '   '
-  #   board[row][column] == empty ? true : false
-  # end
-
 end
+
+game = Board.new
+game.create_board_spaces
+game.print_board

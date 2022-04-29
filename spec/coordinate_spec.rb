@@ -65,9 +65,17 @@ describe Coordinate do
     end
 
     context 'when piece on the board is a black pawn' do
-      xit 'returns b_pawn' do
-        set_piece('b', 'pawn', 'e4')
-        expect(coordinate.get_name_of_piece('e4')).to eq('b_pawn')
+      it 'returns b_pawn' do
+        coordinate.set_piece('b', 'pawn')
+        coordinate.get_name_of_piece
+        expect(coordinate.piece).to eq('b_pawn')
+      end
+    end
+
+    context 'when space is empty' do
+      it 'returns nil' do
+        coordinate.get_name_of_piece
+        expect(coordinate.piece).to eq(nil)
       end
     end
   end
