@@ -10,20 +10,22 @@ class Board
   attr_accessor :board, :coordinate, :p1_graveyard, :p2_graveyard
 
   def initialize
-    @board = Array.new(8) {Array.new(8)}
+    @board = create_board
     @p1_graveyard = []
     @p2_graveyard = []
   end
 
-  def create_board_spaces
-    board.each_with_index do |row, row_index|
+  def create_board
+    array = Array.new(8) {Array.new(8)}
+    array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
-      board[row_index][column_index] = Coordinate.new(row_index, column_index)
+        array[row_index][column_index] = Coordinate.new(row_index, column_index)
       end
     end
   end
 
   def print_board
+    
     rows = ""
     
     puts "   a  b  c  d  e  f  g  h"
@@ -33,9 +35,9 @@ class Board
       row.each_with_index do |space, column_index|
         if row_index % 2 == 0 && column_index % 2 == 0 ||
            row_index % 2 == 1 && column_index % 2 == 1
-           rows << space.colorize(background: :blue)
+           rows << space.content.colorize(background: :blue)
         else
-          rows << space.colorize(background: :black)
+          rows << space.content.colorize(background: :black)
         end
       end
       rows << " #{row_number.to_s}\n"
@@ -47,6 +49,9 @@ class Board
 
 end
 
-game = Board.new
-game.create_board_spaces
-game.print_board
+# game = Board.new
+# game.create_board
+# game.board[6][3].set_piece('w', 'pawn')
+# puts game.board[6][3]
+
+# game.print_board

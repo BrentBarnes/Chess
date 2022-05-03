@@ -18,51 +18,54 @@ class Game
   def move_piece(from=nil, to=nil)
     if from.nil? then from = gets.chomp end
     if to.nil? then to = gets.chomp end
-      
-    from_space = select_space(from)
-    to_row = selection_to_array_row(to)
-    to_column = selection_to_array_column(to)
 
-    if valid_space?(to) && !same_team?(to)
+    from_space = select_space(from)
+    to_space = select_space(to)
+
+    if valid_from_selection?(from) && valid_to_selection?(to)
       if !same_team?(to) then send_piece_to_graveyard(to) end
-      board.board[to_row][to_column] = from_space
-      board.clear_piece(from)
+      to_space.content = from_space.content
+      from_space.clear_piece
     else
       puts 'Select a valid move.'
       move_piece(from=nil, to=nil)
     end
   end
 
-  def select_space(selection=nil)
-    if selection.nil? then selection = gets.chomp end
-
-    if valid_space?(selection)
-      row = selection_to_array_row(selection)
-      column = selection_to_array_column(selection)
-      board.board[row][column]
+  def select_space(coordinate=nil)
+    if coordinate.nil? then coordinate = gets.chomp end
+    
+    if valid_board_space?(coordinate)
+      board.board.flatten.find { |space| space.name == coordinate }
     else
-      puts 'Select a valid coordinate.'
+      puts 'Select a valid coordinate (a-h followed by 1-8)'
       select_space
     end
   end
 
-  def player1_turn?
-    turn % 2 == 1 ? true : false
+  def valid_from_selection?(selection)
+    return false if !valid_board_space?(selection)
+    same_team?(selection) ? true : false
   end
 
-  def send_piece_to_graveyard(coordinate)
-    piece = get_piece_on_space(coordinate)
-    if white_pieces.include?(piece)
-      board.p1_graveyard << piece
-    elsif black_pieces.include?(piece)
-      board.p2_graveyard << piece
-    end
+  def valid_to_selection?(selection)
+    return false if !valid_board_space?(selection)
+    space = select_space(selection)
+    !same_team?(selection) || space.space_empty? ? true : false
   end
 
-  def same_team?(selection)
-    return if board.space_empty?(selection)
-    piece = get_piece_on_space(selection)
-    
+  def valid_board_space?(selection)
+    return false if selection.length != 2
+    return false if !selection[0].between?('a','h')
+    return false if !selection[1].between?('1','8')
+    true
+  end
+
+  def same_team?(coordinate)
+    space = select_space(coordinate)
+    piece = space.get_piece_on_space
+    return if space.space_empty?
+
     if white_pieces.include?(piece) && player1_turn? ||
       black_pieces.include?(piece) && !player1_turn?
       true
@@ -71,14 +74,17 @@ class Game
     end
   end
 
-  def valid_space?(selection)
-    row = selection_to_array_row(selection)
-    column = selection_to_array_column(selection)
-    if selection.length == 2 && column.between?(0,7) && row.between?(0,7)
-      true
-    else
-      false
+  def send_piece_to_graveyard(coordinate)
+    piece = select_space(coordinate).get_piece_on_space
+    if white_pieces.include?(piece)
+      board.p1_graveyard << piece
+    elsif black_pieces.include?(piece)
+      board.p2_graveyard << piece
     end
+  end
+
+  def player1_turn?
+    turn % 2 == 1 ? true : false
   end
 
 end

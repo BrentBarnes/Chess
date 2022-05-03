@@ -79,4 +79,41 @@ describe Coordinate do
       end
     end
   end
+
+  describe '#alter_name' do
+    subject(:coordinate) { described_class.new(2,2) }
+    context 'when space selected is c6' do
+      it 'returns the name of the space above' do
+        expect(coordinate.up).to eq('c7')
+      end
+
+      it 'returns the name of the space above and right' do
+        expect(coordinate.up_right).to eq('d7')
+      end
+
+      it 'returns the name of the space to the right' do
+        expect(coordinate.right).to eq('d6')
+      end
+
+      it 'returns the name of the space below and right' do
+        expect(coordinate.down_right).to eq('d5')
+      end
+
+      it 'returns the name of the space below' do
+        expect(coordinate.down).to eq('c5')
+      end
+
+      it 'returns the name of the space below and left' do
+        expect(coordinate.down_left).to eq('b5')
+      end
+
+      it 'returns the name of the space to the left' do
+        expect(coordinate.left).to eq('b6')
+      end
+
+      it 'returns the name of the space above and left' do
+        expect(coordinate.up_left).to eq('b7')
+      end
+    end
+  end
 end
