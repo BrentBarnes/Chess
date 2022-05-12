@@ -64,13 +64,15 @@ class Game
   def same_team?(coordinate)
     space = select_space(coordinate)
     piece = space.get_piece_on_space
-    return if space.space_empty?
 
     if white_pieces.include?(piece) && player1_turn? ||
       black_pieces.include?(piece) && !player1_turn?
       true
-    else
+    elsif white_pieces.include?(piece) && !player1_turn? ||
+      black_pieces.include?(piece) && player1_turn?
       false
+    elsif space.space_empty?
+      'empty'
     end
   end
 

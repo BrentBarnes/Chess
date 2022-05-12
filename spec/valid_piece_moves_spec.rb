@@ -6,12 +6,12 @@ require 'miscellaneous'
 describe ValidPieceMoves do
   include Miscellaneous
   
-  describe '#w_pawn_valid_moves' do
+  describe '#pawn_valid_moves' do
     subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
-    context 'when a white pawn is at a2' do
+    context 'when a white pawn is at b2' do
       it 'returns an array with valid moves' do
-        set_piece('w', 'pawn', 'a2')
-        expect(game.w_pawn_valid_moves('a2')).to eq(['a3', 'a4'])
+        set_piece('w','pawn','b2')
+        expect(game.pawn_valid_moves('b2')).to eq(['b3', 'b4'])
       end
     end
 
@@ -21,7 +21,7 @@ describe ValidPieceMoves do
         set_piece('b', 'pawn', 'c3')
         set_piece('b', 'pawn', 'b3')
         set_piece('b', 'pawn', 'd3')
-        expect(game.w_pawn_valid_moves('c2')).to eq(['b3', 'd3'])
+        expect(game.pawn_valid_moves('c2')).to eq(['b3', 'd3'])
       end
     end
 
@@ -30,17 +30,15 @@ describe ValidPieceMoves do
         set_piece('w', 'pawn', 'c2')
         set_piece('b', 'pawn', 'c4')
         set_piece('b', 'pawn', 'b3')
-        expect(game.w_pawn_valid_moves('c2')).to eq(['c3', 'b3'])
+        expect(game.pawn_valid_moves('c2')).to eq(['c3', 'b3'])
       end
     end
-  end
-
-  describe '#b_pawn_valid_moves' do
-    subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
+  
     context 'when a black pawn is at f7' do
       it 'returns an array with valid moves' do
+        game.instance_variable_set(:@turn, 2)
         set_piece('b', 'pawn', 'f7')
-        expect(game.b_pawn_valid_moves('f7')).to eq(['f6', 'f5'])
+        expect(game.pawn_valid_moves('f7')).to eq(['f6', 'f5'])
       end
     end
 
@@ -52,72 +50,261 @@ describe ValidPieceMoves do
         set_piece('w', 'pawn', 'e6')
         set_piece('w', 'pawn', 'g6')
         
-        expect(game.b_pawn_valid_moves('f7')).to eq(['f6', 'e6', 'g6'])
+        expect(game.pawn_valid_moves('f7')).to eq(['f6', 'e6', 'g6'])
       end
     end
   end
 
-  describe '#rook_valid_moves' do
-    subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
-    context 'when coordinate of rook is e5' do
-      xit 'returns an array of valid moves' do
-        set_piece('w', 'rook', 'e5')
-        up_down = 'e6','e7','e8','e4','e3','e2','e1'
-        left_right = 'd5','c5','b5','a5','f5','g5','h5'
-        expect(game.rook_valid_moves('e5')).to eq([up_down, left_right].flatten)
-      end
-    end
+  # describe '#rook_valid_moves' do
+  #   subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
+  #   context 'when coordinate of rook is e5' do
+  #     xit 'returns an array of valid moves' do
+  #       set_piece('w', 'rook', 'e5')
+  #       up_down = 'e6','e7','e8','e4','e3','e2','e1'
+  #       left_right = 'd5','c5','b5','a5','f5','g5','h5'
+  #       expect(game.rook_valid_moves('e5')).to eq([up_down, left_right].flatten)
+  #     end
+  #   end
 
-    context 'when coordinate of rook is, blocked, with enemies' do
-      xit 'returns an array of valid moves' do
-        set_piece('w', 'rook', 'e5')
-        set_piece('w', 'pawn', 'g5')
-        set_piece('w', 'pawn', 'e4')
-        set_piece('b', 'pawn', 'e8')
-        set_piece('b', 'pawn', 'c5')
-        up_down = 'e6','e7','e8'
-        left_right = 'd5','c5','f5'
+  #   context 'when coordinate of rook is, blocked, with enemies' do
+  #     xit 'returns an array of valid moves' do
+  #       set_piece('w', 'rook', 'e5')
+  #       set_piece('w', 'pawn', 'g5')
+  #       set_piece('w', 'pawn', 'e4')
+  #       set_piece('b', 'pawn', 'e8')
+  #       set_piece('b', 'pawn', 'c5')
+  #       up_down = 'e6','e7','e8'
+  #       left_right = 'd5','c5','f5'
         
-        expect(game.rook_valid_moves('e5')).to eq([up_down, left_right].flatten)
+  #       expect(game.rook_valid_moves('e5')).to eq([up_down, left_right].flatten)
+  #     end
+  #   end
+  # end
+
+  describe '#valid_moves_in_direction' do
+    subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
+    before do
+      set_piece('w','rook','d4')
+    end
+
+    context 'when rook is on space d4 and the direction is up' do
+      it 'returns available valid spaces in the up direction' do
+        above = ['d5','d6','d7','d8']
+        expect(game.valid_moves_in_direction('d4',0,1)).to eq(above)
+      end
+
+      it 'returns available valid spaces in the up direction with enemy above' do
+        set_piece('b','pawn','d7')
+        above = ['d5','d6','d7']
+        expect(game.valid_moves_in_direction('d4',0,1)).to eq(above)
+      end
+
+      it 'returns available valid spaces in the up direction with friend above' do
+        set_piece('w','pawn','d7')
+        above = ['d5','d6']
+        expect(game.valid_moves_in_direction('d4',0,1)).to eq(above)
+      end
+    end
+
+    context 'when rook is on space d4 and the direction is up right' do
+      it 'returns available valid spaces in the up right direction' do
+        up_right = ['e5','f6','g7','h8']
+        expect(game.valid_moves_in_direction('d4',1,1)).to eq(up_right)
+      end
+
+      it 'returns available valid spaces in the up right direction' do
+        set_piece('b','pawn','f6')
+        up_right = ['e5','f6']
+        expect(game.valid_moves_in_direction('d4',1,1)).to eq(up_right)
+      end
+
+      it 'returns available valid spaces in the up right direction' do
+        set_piece('w','pawn','g7')
+        up_right = ['e5','f6']
+        expect(game.valid_moves_in_direction('d4',1,1)).to eq(up_right)
+      end
+    end
+
+    context 'when rook is on space d4 and the direction is right' do
+      it 'returns available valid spaces in the right direction' do
+        right = ['e4','f4','g4','h4']
+        expect(game.valid_moves_in_direction('d4',1,0)).to eq(right)
+      end
+
+      it 'returns available valid spaces in the right direction' do
+        set_piece('b','pawn','f4')
+        right = ['e4','f4']
+        expect(game.valid_moves_in_direction('d4',1,0)).to eq(right)
+      end
+
+      it 'returns available valid spaces in the right direction' do
+        set_piece('w','pawn','g4')
+        right = ['e4','f4']
+        expect(game.valid_moves_in_direction('d4',1,0)).to eq(right)
+      end
+    end
+
+    context 'when rook is on space d4 and the direction is down right' do
+      it 'returns available valid spaces in the down right direction' do
+        down_right = ['e3', 'f2', 'g1']
+        expect(game.valid_moves_in_direction('d4',1,-1)).to eq(down_right)
+      end
+
+      it 'returns available valid spaces in the down right direction' do
+        set_piece('b','pawn','f2')
+        down_right = ['e3', 'f2']
+        expect(game.valid_moves_in_direction('d4',1,-1)).to eq(down_right)
+      end
+
+      it 'returns available valid spaces in the down right direction' do
+        set_piece('w','pawn','g1')
+        down_right = ['e3', 'f2']
+        expect(game.valid_moves_in_direction('d4',1,-1)).to eq(down_right)
+      end
+    end
+
+    context 'when rook is on space d4 and the direction is down' do
+      it 'returns available valid spaces in the down direction' do
+        down = ['d3','d2','d1']
+        expect(game.valid_moves_in_direction('d4',0,-1)).to eq(down)
+      end
+
+      it 'returns available valid spaces in the down direction' do
+        set_piece('b','pawn','d2')
+        down = ['d3','d2']
+        expect(game.valid_moves_in_direction('d4',0,-1)).to eq(down)
+      end
+
+      it 'returns available valid spaces in the down direction' do
+        set_piece('w','pawn','d1')
+        down = ['d3','d2']
+        expect(game.valid_moves_in_direction('d4',0,-1)).to eq(down)
+      end
+    end
+
+    context 'when rook is on space d4 and the direction is down left' do
+      it 'returns available valid spaces in the down left direction' do
+        down_left = ['c3','b2','a1']
+        expect(game.valid_moves_in_direction('d4',-1,-1)).to eq(down_left)
+      end
+
+      it 'returns available valid spaces in the down left direction' do
+        set_piece('b','pawn','b2')
+        down_left = ['c3','b2']
+        expect(game.valid_moves_in_direction('d4',-1,-1)).to eq(down_left)
+      end
+
+      it 'returns available valid spaces in the down left direction' do
+        set_piece('w','pawn','a1')
+        down_left = ['c3','b2']
+        expect(game.valid_moves_in_direction('d4',-1,-1)).to eq(down_left)
+      end
+    end
+
+    context 'when rook is on space d4 and the direction is left' do
+      it 'returns available valid spaces in the left direction' do
+        left = ['c4','b4','a4']
+        expect(game.valid_moves_in_direction('d4',-1,0)).to eq(left)
+      end
+
+      it 'returns available valid spaces in the left direction' do
+        set_piece('b','pawn','b4')
+        left = ['c4','b4']
+        expect(game.valid_moves_in_direction('d4',-1,0)).to eq(left)
+      end
+
+      it 'returns available valid spaces in the left direction' do
+        set_piece('w','pawn','a4')
+        left = ['c4','b4']
+        expect(game.valid_moves_in_direction('d4',-1,0)).to eq(left)
+      end
+    end
+
+    context 'when rook is on space d4 and the direction is up left' do
+      it 'returns available valid spaces in the up left direction' do
+        up_left = ['c5','b6','a7']
+        expect(game.valid_moves_in_direction('d4',-1,1)).to eq(up_left)
+      end
+
+      it 'returns available valid spaces in the up left direction' do
+        set_piece('b','pawn','b6')
+        up_left = ['c5','b6']
+        expect(game.valid_moves_in_direction('d4',-1,1)).to eq(up_left)
+      end
+
+      it 'returns available valid spaces in the up left direction' do
+        set_piece('w','pawn','a7')
+        up_left = ['c5','b6']
+        expect(game.valid_moves_in_direction('d4',-1,1)).to eq(up_left)
       end
     end
   end
 
-  describe '#move_up' do
+  describe '#valid_knight_moves' do
     subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
-    context 'when coordinate of rook is e5' do
-      it 'returns an array of valid moves' do
-        set_piece('w', 'rook', 'e5')
-        up = 'e6','e7','e8'
-        expect(game.move_up('e5')).to eq(up)
-      end
+    before do
+      set_piece('w','knight','d4')
     end
 
-    context 'when coordinate of rook is e5' do
-      it 'cannot move onto friendly space' do
-        set_piece('w', 'rook', 'e5')
-        set_piece('w', 'pawn', 'e8')
-        up = 'e6','e7'
-        expect(game.move_up('e5')).to eq(up)
+    context 'when knight is placed on space d4' do
+      it 'returns all available spaces' do
+        moves = ['c6','e6','f5','f3','e2','c2','b3','b5']
+        expect(game.valid_knight_moves('d4')).to eq(moves)
       end
-    end
 
-    context 'when coordinate of rook is e5' do
-      it 'can move onto enemy space' do
-        set_piece('w', 'rook', 'e5')
-        set_piece('b', 'pawn', 'e7')
-        up = 'e6','e7'
-        expect(game.move_up('e5')).to eq(up)
+      it 'returns all available spaces blocked with friends and enemies' do
+        set_piece('w','pawn','c6')
+        set_piece('w','pawn','b3')
+        set_piece('b','pawn','e6')
+        set_piece('b','pawn','f3')
+        moves = ['e6','f5','f3','e2','c2','b5']
+        expect(game.valid_knight_moves('d4')).to eq(moves)
       end
     end
   end
 
-
-  describe '#array_to_chess_coord' do
+  describe '#valid_king_moves' do
     subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
-    context 'when given (6,0)' do
-      it 'returns a2' do
-        expect(game.array_to_chess_coord(6,0)).to eq('a2')
+    before do
+      set_piece('w','king','d4')
+    end
+
+    context 'when king is placed on space d4' do
+      it 'returns all available spaces' do
+        moves = ['d5','e5','e4','e3','d3','c3','c4','c5']
+        expect(game.valid_king_moves('d4')).to eq(moves)
+      end
+
+      it 'returns all available spaces blocked with friends and enemies' do
+        set_piece('w','pawn','d5')
+        set_piece('w','pawn','c3')
+        set_piece('b','pawn','e5')
+        set_piece('b','pawn','d3')
+        moves = ['e5','e4','e3','d3','c4','c5']
+        expect(game.valid_king_moves('d4')).to eq(moves)
+      end
+    end
+  end
+
+  describe '#valid_rook_moves' do
+    subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
+    before do
+      set_piece('w','rook','d4')
+    end
+
+    context 'when rook is placed on space d4' do
+      it 'returns valid spaces in all directions' do
+        moves = ['d5','d6','d7','d8','e4','f4','g4','h4','d3','d2','d1','c4','b4','a4']
+        expect(game.valid_rook_moves('d4')).to eq(moves)
+      end
+
+      it 'returns valid spaces in all directions with friends and enemies' do
+        set_piece('w','pawn','d7')
+        set_piece('b','pawn','g4')
+        set_piece('b','pawn','d3')
+        set_piece('w','pawn','c4')
+        moves = ['d5','d6','e4','f4','g4','d3']
+        expect(game.valid_rook_moves('d4')).to eq(moves)
       end
     end
   end
@@ -126,9 +313,8 @@ end
 #Helper Methods
 
 def set_piece(color_letter, piece_name, coordinate)
-  row = selection_to_array_row(coordinate)
-  column = selection_to_array_column(coordinate)
+  space = game.select_space(coordinate)
   piece = create_piece(color_letter, piece_name)
 
-  game.board.board[row][column] = " #{piece} "
+  space.content = " #{piece} "
 end

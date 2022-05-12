@@ -1,93 +1,83 @@
-
+# require_relative 'miscellaneous'
 
 module ValidPieceMoves
+  # include Miscellaneous
 
-  def w_pawn_valid_moves(coordinate)
+  def pawn_valid_moves(coordinate)
     valid_moves = []
-    row = selection_to_array_row(coordinate)
-    column = selection_to_array_column(coordinate)
-    
-    up = array_to_chess_coord(row-1,column)
-    if valid_space?(up) && board.space_empty?(up)
-      valid_moves << up 
-    end
-    
-    two_up = array_to_chess_coord(row-2,column)
-    if valid_space?(two_up) &&
-      board.space_empty?(up) && 
-      board.space_empty?(two_up) &&
-      row == 6
-      valid_moves << two_up
+    space = select_space(coordinate)
+
+    if white_pieces.include?(space.get_piece_on_space)
+      forward = select_space(space.up)
+      forward_2 = select_space(forward.up)
+      enemy_left = select_space(space.up_left)
+      enemy_right = select_space(space.up_right)
+    elsif black_pieces.include?(space.get_piece_on_space)
+      forward = select_space(space.down)
+      forward_2 = select_space(forward.down)
+      enemy_left = select_space(space.down_left)
+      enemy_right = select_space(space.down_right)
     end
 
-    up_left = array_to_chess_coord(row-1,column-1)
-    if valid_space?(up_left) &&
-      !same_team?(up_left) &&
-      !board.space_empty?(up_left)
-      valid_moves << up_left
-    end
+    if forward.space_empty? then valid_moves << forward.name end
+    if forward.space_empty? && forward_2.space_empty? then valid_moves << forward_2.name end
     
-    up_right = array_to_chess_coord(row-1,column+1)
-    if valid_space?(up_right) && 
-      !same_team?(up_right) && 
-      !board.space_empty?(up_right)
-      valid_moves << up_right
+    if !same_team?(enemy_left.name) && !enemy_left.space_empty? then valid_moves << enemy_left.name end
+    if !same_team?(enemy_right.name) && !enemy_right.space_empty? then valid_moves << enemy_right.name end 
+
+    valid_moves
+  end
+
+  def valid_rook_moves(coordinate)
+    x = [0,1,0,-1]
+    y = [1,0,-1,0]
+    valid_moves = []
+    
+    4.times do |i|
+      # binding.pry
+      valid_moves << valid_moves_in_direction(coordinate, x[i], y[i])
+    end
+    valid_moves.flatten
+  end
+
+  def valid_moves_in_direction(space, x_adj, y_adj)
+    current = select_space(space)
+    all_spaces = current.all_spaces_in_direction(space, x_adj, y_adj)
+    next_space = select_space(all_spaces[0])
+    valid_spaces = []
+    
+    i = 0
+    until i >= all_spaces.length || !same_team?(current.name) || same_team?(next_space.name) == true
+      valid_spaces << next_space.name
+      i += 1
+      current = next_space
+      if i < all_spaces.length then next_space = select_space(all_spaces[i]) end
+    end
+    valid_spaces
+  end
+
+  def valid_knight_moves(space)
+    current = select_space(space)
+    x = [-1,1,2,2,1,-1,-2,-2]
+    y = [2,2,1,-1,-2,-2,-1,1]
+    valid_moves = []
+
+    8.times do |i|
+      new_space = current.alter_name(space, x[i], y[i])
+      valid_moves << new_space unless same_team?(new_space) == true
     end
     valid_moves
   end
 
-  def b_pawn_valid_moves(coordinate)
+  def valid_king_moves(space)
+    current = select_space(space)
+    x = [0,1,1,1,0,-1,-1,-1]
+    y = [1,1,0,-1,-1,-1,0,1]
     valid_moves = []
-    
-    row = selection_to_array_row(coordinate)
-    column = selection_to_array_column(coordinate)
-    
-    down = array_to_chess_coord(row+1,column)
-    if valid_space?(down) && board.space_empty?(down)
-      valid_moves << down 
-    end
-    
-    two_down = array_to_chess_coord(row+2,column)
-    if valid_space?(two_down) &&
-      board.space_empty?(down) && 
-      board.space_empty?(two_down) &&
-      row == 1
-      valid_moves << two_down
-    end
 
-    down_left = array_to_chess_coord(row+1,column-1)
-    if valid_space?(down_left) &&
-      !same_team?(down_left) &&
-      !board.space_empty?(down_left)
-      valid_moves << down_left
-    end
-
-    down_right = array_to_chess_coord(row+1,column+1)
-    if valid_space?(down_right) && 
-      !same_team?(down_right) && 
-      !board.space_empty?(down_right)
-      valid_moves << down_right
-    end
-    valid_moves
-  end
-
-  def rook_valid_moves(coordinate)
-    valid_moves = []
-    
-    row = selection_to_array_row(coordinate)
-    column = selection_to_array_column(coordinate)
-    
-  end
-
-  def move_up(current_space, valid_moves=[])
-    row = selection_to_array_row(current_space)
-    column = selection_to_array_column(current_space)
-    next_space = array_to_chess_coord(row-1, column)
-    return if !same_team?(current_space) && !board.space_empty?(current_space)
-
-    if  valid_space?(next_space) && !same_team?(next_space)
-      valid_moves << next_space
-      move_up(next_space, valid_moves)
+    8.times do |i|
+      new_space = current.alter_name(space, x[i], y[i])
+      valid_moves << new_space unless same_team?(new_space) == true
     end
     valid_moves
   end

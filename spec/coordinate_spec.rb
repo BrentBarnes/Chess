@@ -73,7 +73,7 @@ describe Coordinate do
     end
 
     context 'when space is empty' do
-      it 'returns nil' do
+      xit 'returns nil' do
         coordinate.get_name_of_piece
         expect(coordinate.piece).to eq(nil)
       end
@@ -115,5 +115,109 @@ describe Coordinate do
         expect(coordinate.up_left).to eq('b7')
       end
     end
+
+    context 'when given a coordinate input' do
+      it 'alters the name of the coordinate given' do
+        expect(coordinate.alter_name('e3',0,1)).to eq('e4')
+      end
+    end
   end
+
+  describe '#all_spaces_in_direction' do
+    subject(:coordinate) { described_class.new(3,1)}
+    context 'when space name is b5' do
+      it 'returns the name of all spaces in the up direction' do
+        above = ['b6','b7','b8']
+        expect(coordinate.all_spaces_in_direction('b5',0,1)).to eq(above)
+      end
+    end
+
+    context 'when space name is b5' do
+      it 'returns the name of all spaces in the up right direction' do
+        up_right = ['c6','d7','e8']
+        expect(coordinate.all_spaces_in_direction('b5',1,1)).to eq(up_right)
+      end
+    end
+
+    context 'when space name is b5' do
+      it 'returns the name of all spaces in the right direction' do
+        right = ['c5','d5','e5','f5','g5','h5']
+        expect(coordinate.all_spaces_in_direction('b5',1,0)).to eq(right)
+      end
+    end
+
+    context 'when space name is b5' do
+      it 'returns the name of all spaces in the down right direction' do
+        down_right = ['c4','d3','e2','f1']
+        expect(coordinate.all_spaces_in_direction('b5',1,-1)).to eq(down_right)
+      end
+    end
+
+    context 'when space name is b5' do
+      it 'returns the name of all spaces in the down direction' do
+        down = ['b4','b3','b2','b1']
+        expect(coordinate.all_spaces_in_direction('b5',0,-1)).to eq(down)
+      end
+    end
+
+    context 'when space name is b5' do
+      it 'returns the name of all spaces in the down left direction' do
+        down_left = ['a4']
+        expect(coordinate.all_spaces_in_direction('b5',-1,-1)).to eq(down_left)
+      end
+    end
+
+    context 'when space name is b5' do
+      it 'returns the name of all spaces in the left direction' do
+        left = ['a5']
+        expect(coordinate.all_spaces_in_direction('b5',-1,0)).to eq(left)
+      end
+    end
+
+    context 'when space name is b5' do
+      it 'returns the name of all spaces in the up left direction' do
+        up_left = ['a6']
+        expect(coordinate.all_spaces_in_direction('b5',-1,1)).to eq(up_left)
+      end
+    end
+  end
+
+  describe '#valid_moves_in_direction' do
+    subject(:coordinate) { described_class.new(4,3) }
+    context 'when rook is on space d4' do
+      it 'returns available valid spaces in the up direction' do
+        coordinate.set_piece('w','rook')
+        above = ['d5','d6','d7','d8']
+        expect(coordinate.valid_moves_in_direction()).to eq(above)
+      end
+    end
+
+    context 'when rook is on space d4' do
+      xit 'returns available valid spaces in the up direction with enemy above' do
+        coordinate.set_piece('w','rook')
+        set_piece('b','pawn','d7')
+        above = ['d5','d6','d7']
+        expect(coordinate.valid_moves_in_direction()).to eq(above)
+      end
+    end
+
+    context 'when rook is on space d4' do
+      xit 'returns available valid spaces in the up direction with friend above' do
+        coordinate.set_piece('w','rook')
+        set_piece('w','pawn','d7')
+        above = ['d5','d6']
+        expect(coordinate.valid_moves_in_direction()).to eq(above)
+      end
+    end
+  end
+end
+
+
+#Helper Methods
+
+def set_piece(color_letter, piece_name, coordinate)
+  space = game.select_space(coordinate)
+  piece = create_piece(color_letter, piece_name)
+
+  space.content = " #{piece} "
 end
