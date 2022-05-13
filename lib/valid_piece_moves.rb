@@ -3,7 +3,7 @@
 module ValidPieceMoves
   # include Miscellaneous
 
-  def pawn_valid_moves(coordinate)
+  def valid_pawn_moves(coordinate)
     valid_moves = []
     space = select_space(coordinate)
 
@@ -34,7 +34,28 @@ module ValidPieceMoves
     valid_moves = []
     
     4.times do |i|
-      # binding.pry
+      valid_moves << valid_moves_in_direction(coordinate, x[i], y[i])
+    end
+    valid_moves.flatten
+  end
+
+  def valid_queen_moves(coordinate)
+    x = [0,1,1,1,0,-1,-1,-1]
+    y = [1,1,0,-1,-1,-1,0,1]
+    valid_moves = []
+    
+    8.times do |i|
+      valid_moves << valid_moves_in_direction(coordinate, x[i], y[i])
+    end
+    valid_moves.flatten
+  end
+
+  def valid_bishop_moves(coordinate)
+    x = [1,1,-1,-1]
+    y = [1,-1,-1,1]
+    valid_moves = []
+    
+    4.times do |i|
       valid_moves << valid_moves_in_direction(coordinate, x[i], y[i])
     end
     valid_moves.flatten

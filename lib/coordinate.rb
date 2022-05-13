@@ -1,11 +1,13 @@
 
 require_relative 'miscellaneous'
+require_relative 'valid_piece_moves'
 
 class Coordinate
   include Miscellaneous
+  include ValidPieceMoves
 
   attr_accessor :row, :column, :content, :name, :piece
-  attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left 
+  attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
 
   def initialize(row, column)
     @row = row
@@ -21,6 +23,7 @@ class Coordinate
     @down_left = alter_name(-1,-1)
     @left = alter_name(-1,0)
     @up_left = alter_name(-1,1)
+    @piece_valid_moves = valid_moves_for_piece
   end
 
   def set_piece(color_letter, piece_name)
@@ -51,7 +54,6 @@ class Coordinate
     end
     
     def get_piece_on_space
-      
     content[1]
   end
 
@@ -73,4 +75,16 @@ class Coordinate
     spaces
   end
 
+  def valid_moves_for_piece
+    pieces = {
+  #     :king => valid_king_moves(name),
+  #     :queen => valid_queen_moves(name),
+  #     :knight => valid_knight_moves(name),
+  #     :bishop => valid_bishop_moves(name),
+      :rook => valid_rook_moves(name)
+  #     :pawn => valid_pawn_moves(name)
+    }
+
+    pieces[:rook]
+  end
 end

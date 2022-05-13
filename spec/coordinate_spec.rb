@@ -182,31 +182,14 @@ describe Coordinate do
     end
   end
 
-  describe '#valid_moves_in_direction' do
+  describe '#valid_moves_for_piece' do
     subject(:coordinate) { described_class.new(4,3) }
-    context 'when rook is on space d4' do
-      it 'returns available valid spaces in the up direction' do
+    context 'when rook is placed on space d4' do
+      it 'updates @piece_valid_moves with valid moves' do
         coordinate.set_piece('w','rook')
-        above = ['d5','d6','d7','d8']
-        expect(coordinate.valid_moves_in_direction()).to eq(above)
-      end
-    end
-
-    context 'when rook is on space d4' do
-      xit 'returns available valid spaces in the up direction with enemy above' do
-        coordinate.set_piece('w','rook')
-        set_piece('b','pawn','d7')
-        above = ['d5','d6','d7']
-        expect(coordinate.valid_moves_in_direction()).to eq(above)
-      end
-    end
-
-    context 'when rook is on space d4' do
-      xit 'returns available valid spaces in the up direction with friend above' do
-        coordinate.set_piece('w','rook')
-        set_piece('w','pawn','d7')
-        above = ['d5','d6']
-        expect(coordinate.valid_moves_in_direction()).to eq(above)
+        new_variable_value = coordinate.instance_variable_get(:@piece_valid_moves)
+        moves = ['d5','d6','d7','d8','e4','f4','g4','h4','d3','d2','d1','c4','b4','a4']
+        expect(new_variable_value).to eq(moves)
       end
     end
   end

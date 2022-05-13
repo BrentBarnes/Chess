@@ -6,12 +6,12 @@ require 'miscellaneous'
 describe ValidPieceMoves do
   include Miscellaneous
   
-  describe '#pawn_valid_moves' do
+  describe '#valid_pawn_moves' do
     subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
     context 'when a white pawn is at b2' do
       it 'returns an array with valid moves' do
         set_piece('w','pawn','b2')
-        expect(game.pawn_valid_moves('b2')).to eq(['b3', 'b4'])
+        expect(game.valid_pawn_moves('b2')).to eq(['b3', 'b4'])
       end
     end
 
@@ -21,7 +21,7 @@ describe ValidPieceMoves do
         set_piece('b', 'pawn', 'c3')
         set_piece('b', 'pawn', 'b3')
         set_piece('b', 'pawn', 'd3')
-        expect(game.pawn_valid_moves('c2')).to eq(['b3', 'd3'])
+        expect(game.valid_pawn_moves('c2')).to eq(['b3', 'd3'])
       end
     end
 
@@ -30,7 +30,7 @@ describe ValidPieceMoves do
         set_piece('w', 'pawn', 'c2')
         set_piece('b', 'pawn', 'c4')
         set_piece('b', 'pawn', 'b3')
-        expect(game.pawn_valid_moves('c2')).to eq(['c3', 'b3'])
+        expect(game.valid_pawn_moves('c2')).to eq(['c3', 'b3'])
       end
     end
   
@@ -38,7 +38,7 @@ describe ValidPieceMoves do
       it 'returns an array with valid moves' do
         game.instance_variable_set(:@turn, 2)
         set_piece('b', 'pawn', 'f7')
-        expect(game.pawn_valid_moves('f7')).to eq(['f6', 'f5'])
+        expect(game.valid_pawn_moves('f7')).to eq(['f6', 'f5'])
       end
     end
 
@@ -50,36 +50,10 @@ describe ValidPieceMoves do
         set_piece('w', 'pawn', 'e6')
         set_piece('w', 'pawn', 'g6')
         
-        expect(game.pawn_valid_moves('f7')).to eq(['f6', 'e6', 'g6'])
+        expect(game.valid_pawn_moves('f7')).to eq(['f6', 'e6', 'g6'])
       end
     end
   end
-
-  # describe '#rook_valid_moves' do
-  #   subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
-  #   context 'when coordinate of rook is e5' do
-  #     xit 'returns an array of valid moves' do
-  #       set_piece('w', 'rook', 'e5')
-  #       up_down = 'e6','e7','e8','e4','e3','e2','e1'
-  #       left_right = 'd5','c5','b5','a5','f5','g5','h5'
-  #       expect(game.rook_valid_moves('e5')).to eq([up_down, left_right].flatten)
-  #     end
-  #   end
-
-  #   context 'when coordinate of rook is, blocked, with enemies' do
-  #     xit 'returns an array of valid moves' do
-  #       set_piece('w', 'rook', 'e5')
-  #       set_piece('w', 'pawn', 'g5')
-  #       set_piece('w', 'pawn', 'e4')
-  #       set_piece('b', 'pawn', 'e8')
-  #       set_piece('b', 'pawn', 'c5')
-  #       up_down = 'e6','e7','e8'
-  #       left_right = 'd5','c5','f5'
-        
-  #       expect(game.rook_valid_moves('e5')).to eq([up_down, left_right].flatten)
-  #     end
-  #   end
-  # end
 
   describe '#valid_moves_in_direction' do
     subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
@@ -305,6 +279,66 @@ describe ValidPieceMoves do
         set_piece('w','pawn','c4')
         moves = ['d5','d6','e4','f4','g4','d3']
         expect(game.valid_rook_moves('d4')).to eq(moves)
+      end
+    end
+  end
+
+  describe '#valid_queen_moves' do
+    subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
+    before do
+      set_piece('w','queen','d4')
+    end
+
+    context 'when queen is placed on space d4' do
+      it 'returns all valid spaces' do
+        moves = [
+          'd5','d6','d7','d8','e5','f6','g7','h8','e4','f4','g4','h4',
+          'e3','f2','g1','d3','d2','d1','c3','b2','a1','c4','b4','a4',
+          'c5','b6','a7'
+        ]
+        expect(game.valid_queen_moves('d4')).to eq(moves)
+      end
+
+      it 'returns all valid spaces with friends and enemies blocking' do
+        set_piece('w','pawn','d7')
+        set_piece('w','pawn','g7')
+        set_piece('b','pawn','g4')
+        set_piece('b','pawn','e3')
+        set_piece('b','pawn','d3')
+        set_piece('w','pawn','a1')
+        set_piece('w','pawn','c4')
+        set_piece('b','pawn','b6')
+        moves = [
+          'd5','d6','e5','f6','e4','f4','g4',
+          'e3','d3','c3','b2','c5','b6'
+        ]
+        expect(game.valid_queen_moves('d4')).to eq(moves)
+      end
+    end
+  end
+
+  describe '#valid_bishop_moves' do
+    subject(:game) { Game.new(Board.new) { extend ValidPieceMoves } }
+    before do
+      set_piece('w','bishop','d4')
+    end
+
+    context 'when bishop is placed on space d4' do
+      it 'returns all valid spaces' do
+        moves = [
+          'e5','f6','g7','h8','e3','f2','g1',
+          'c3','b2','a1','c5','b6','a7'
+        ]
+        expect(game.valid_bishop_moves('d4')).to eq(moves)
+      end
+
+      it 'returns all valid spaces with friends and enemies' do
+        set_piece('b','pawn','f6')
+        set_piece('w','pawn','f2')
+        set_piece('b','pawn','a1')
+        set_piece('w','pawn','c5')
+        moves = ['e5','f6','e3','c3','b2','a1']
+        expect(game.valid_bishop_moves('d4')).to eq(moves)
       end
     end
   end
