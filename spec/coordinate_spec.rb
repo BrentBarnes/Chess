@@ -73,9 +73,9 @@ describe Coordinate do
     end
 
     context 'when space is empty' do
-      xit 'returns nil' do
+      it 'returns nil' do
         coordinate.get_name_of_piece
-        expect(coordinate.piece).to eq(nil)
+        expect(coordinate.piece).to eq(' ')
       end
     end
   end
@@ -178,18 +178,6 @@ describe Coordinate do
       it 'returns the name of all spaces in the up left direction' do
         up_left = ['a6']
         expect(coordinate.all_spaces_in_direction('b5',-1,1)).to eq(up_left)
-      end
-    end
-  end
-
-  describe '#valid_moves_for_piece' do
-    subject(:coordinate) { described_class.new(4,3) }
-    context 'when rook is placed on space d4' do
-      it 'updates @piece_valid_moves with valid moves' do
-        coordinate.set_piece('w','rook')
-        new_variable_value = coordinate.instance_variable_get(:@piece_valid_moves)
-        moves = ['d5','d6','d7','d8','e4','f4','g4','h4','d3','d2','d1','c4','b4','a4']
-        expect(new_variable_value).to eq(moves)
       end
     end
   end

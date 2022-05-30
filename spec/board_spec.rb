@@ -7,11 +7,11 @@ require 'coordinate'
 describe Board do
   # include Miscellaneous
 
-  describe '#create_board_spaces' do
+  describe '#create_board' do
     subject(:board) { described_class.new }
     context 'when spaces are created for the board' do
       it 'can return the name of the space when asked' do
-        board.create_board_spaces
+        board.create_board
         expect(board.board[6][3].name).to eq('d2')
       end
     end

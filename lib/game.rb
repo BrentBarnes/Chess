@@ -45,7 +45,12 @@ class Game
 
   def valid_from_selection?(selection)
     return false if !valid_board_space?(selection)
-    same_team?(selection) ? true : false
+    space = select_space(selection)
+    if same_team?(selection) && !space.space_empty?
+      true
+    else
+      false
+    end
   end
 
   def valid_to_selection?(selection)

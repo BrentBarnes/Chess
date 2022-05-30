@@ -23,7 +23,6 @@ class Coordinate
     @down_left = alter_name(-1,-1)
     @left = alter_name(-1,0)
     @up_left = alter_name(-1,1)
-    @piece_valid_moves = valid_moves_for_piece
   end
 
   def set_piece(color_letter, piece_name)
@@ -48,12 +47,13 @@ class Coordinate
   def get_name_of_piece
     symbol = get_piece_on_space
     @@all_pieces.each do |key, value|
-      if value == symbol then @piece = key.to_s end
+      if value == symbol
+        @piece = key.to_s
       end
-      nil
     end
+  end
     
-    def get_piece_on_space
+  def get_piece_on_space
     content[1]
   end
 
@@ -75,16 +75,4 @@ class Coordinate
     spaces
   end
 
-  def valid_moves_for_piece
-    pieces = {
-  #     :king => valid_king_moves(name),
-  #     :queen => valid_queen_moves(name),
-  #     :knight => valid_knight_moves(name),
-  #     :bishop => valid_bishop_moves(name),
-      :rook => valid_rook_moves(name)
-  #     :pawn => valid_pawn_moves(name)
-    }
-
-    pieces[:rook]
-  end
 end
