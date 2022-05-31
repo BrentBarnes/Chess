@@ -1,11 +1,22 @@
 
 require 'colorize'
-require 'pry'
-require_relative 'miscellaneous'
+require_relative 'w_pawn'
+require_relative 'w_rook'
+require_relative 'w_knight'
+require_relative 'w_bishop'
+require_relative 'w_queen'
+require_relative 'w_king'
+require_relative 'b_pawn'
+require_relative 'b_rook'
+require_relative 'b_knight'
+require_relative 'b_bishop'
+require_relative 'b_queen'
+require_relative 'b_king'
+require_relative 'white_team'
+require_relative 'black_team'
 require_relative 'coordinate'
 
 class Board
-  include Miscellaneous
 
   attr_accessor :board, :coordinate, :p1_graveyard, :p2_graveyard
 
@@ -47,11 +58,35 @@ class Board
     puts "   a  b  c  d  e  f  g  h"
   end
 
+  def space_at(coordinate)
+    board.flatten.find { |space| space.name == coordinate }
+  end
+  
+  def set_pieces_on_board
+    white_team = WhiteTeam.new
+    black_team = BlackTeam.new
+
+    i = 0
+    while i < 16
+      place_piece(white_team.pieces[i], white_starting_spaces[i])
+      place_piece(black_team.pieces[i], black_starting_spaces[i])
+      i += 1
+    end
+  end
+
+  def place_piece(piece_object, coordinate)
+    space = space_at(coordinate)
+    space.update_piece_and_content(piece_object)
+  end
+
+  def black_starting_spaces
+    ['a8','b8','c8','d8','e8','f8','g8','h8',
+    'a7','b7','c7','d7','e7','f7','g7','h7']
+  end
+
+  def white_starting_spaces
+    ['a2','b2','c2','d2','e2','f2','g2','h2',
+    'a1','b1','c1','d1','e1','f1','g1','h1']
+  end
+  
 end
-
-# game = Board.new
-# game.create_board
-# game.board[6][3].set_piece('w', 'pawn')
-# puts game.board[6][3]
-
-# game.print_board

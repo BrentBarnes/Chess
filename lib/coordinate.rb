@@ -1,10 +1,9 @@
 
-require_relative 'miscellaneous'
-require_relative 'valid_piece_moves'
+# require_relative 'valid_piece_moves'
+require_relative 'empty_space'
 
 class Coordinate
-  include Miscellaneous
-  include ValidPieceMoves
+  # include ValidPieceMoves
 
   attr_accessor :row, :column, :content, :name, :piece
   attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
@@ -14,7 +13,7 @@ class Coordinate
     @column = column
     @content = "   "
     @name = array_to_chess_coord
-    @piece = get_piece_on_space
+    @piece = EmptySpace.new
     @up = alter_name(0,1)
     @up_right = alter_name(1,1)
     @right = alter_name(1,0)
@@ -25,12 +24,12 @@ class Coordinate
     @up_left = alter_name(-1,1)
   end
 
-  def set_piece(color_letter, piece_name)
-    piece = create_piece(color_letter, piece_name)
-    @content = " #{piece} "
+  def set_piece
+    #should the coordinate set the piece on the board?
   end
 
   def clear_piece
+    #should coordinate clear the space?
     @content = "   "
   end
   
@@ -40,21 +39,13 @@ class Coordinate
     chess_column + chess_row
   end
   
-  def space_empty?
+  def empty?
     content == "   " ? true : false
   end
-  
-  def get_name_of_piece
-    symbol = get_piece_on_space
-    @@all_pieces.each do |key, value|
-      if value == symbol
-        @piece = key.to_s
-      end
-    end
-  end
-    
-  def get_piece_on_space
-    content[1]
+
+  def update_piece_and_content(piece_object)
+    @piece = piece_object
+    @content = " #{piece_object.symbol} "
   end
 
   def alter_name(space=name, x_adj, y_adj)
