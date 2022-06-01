@@ -5,6 +5,7 @@ class Game
   attr_reader :board, :turn
 
   def initialize(board)
+    @main = Main.new
     @board = board
     @turn = 1
   end

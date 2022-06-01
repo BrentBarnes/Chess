@@ -9,6 +9,7 @@ class Coordinate
   attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
 
   def initialize(row, column)
+    @main = Main.new
     @row = row
     @column = column
     @content = "   "
@@ -41,6 +42,14 @@ class Coordinate
   
   def empty?
     content == "   " ? true : false
+  end
+
+  def occupied?
+    content[1] != ' ' ? true : false
+  end
+
+  def in_bounds?
+    !!board.board.flatten.find { |space| space.name == name }
   end
 
   def update_piece_and_content(piece_object)

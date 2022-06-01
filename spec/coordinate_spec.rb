@@ -1,7 +1,14 @@
 
-require 'board'
 require 'coordinate'
 require 'pry'
+require 'board'
+require 'piece_subclasses/pawn'
+require 'piece_subclasses/empty_space'
+require 'piece_subclasses/king'
+require 'piece_subclasses/queen'
+require 'piece_subclasses/rook'
+require 'piece_subclasses/knight'
+require 'piece_subclasses/bishop'
 
 describe Coordinate do
 
@@ -17,6 +24,15 @@ describe Coordinate do
       it 'returns false' do
         coordinate.content = 'not empty'
         expect(coordinate.empty?).to be false
+      end
+    end
+  end
+
+  describe '#in_bounds?' do
+    subject(:coordinate) { described_class.new(6,3) }
+    context 'when coordinate is in bounds' do
+      it 'returns true' do
+        expect(coordinate.in_bounds?).to eq(true)
       end
     end
   end

@@ -1,17 +1,13 @@
 
 require 'colorize'
-require_relative 'w_pawn'
-require_relative 'w_rook'
-require_relative 'w_knight'
-require_relative 'w_bishop'
-require_relative 'w_queen'
-require_relative 'w_king'
-require_relative 'b_pawn'
-require_relative 'b_rook'
-require_relative 'b_knight'
-require_relative 'b_bishop'
-require_relative 'b_queen'
-require_relative 'b_king'
+
+require_relative 'pawn'
+require_relative 'empty_space'
+require_relative 'rook'
+require_relative 'knight'
+require_relative 'bishop'
+require_relative 'queen'
+require_relative 'king'
 require_relative 'white_team'
 require_relative 'black_team'
 require_relative 'coordinate'
@@ -21,6 +17,7 @@ class Board
   attr_accessor :board, :coordinate, :p1_graveyard, :p2_graveyard
 
   def initialize
+    @main = Main.new
     @board = create_board
     @p1_graveyard = []
     @p2_graveyard = []
