@@ -1,9 +1,5 @@
 
-# require_relative 'valid_piece_moves'
-# require_relative 'empty_space'
-
 class Coordinate
-  # include ValidPieceMoves
 
   attr_accessor :row, :column, :content, :name, :piece
   attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
@@ -25,12 +21,7 @@ class Coordinate
     @up_left = alter_name(-1,1)
   end
 
-  def set_piece
-    #should the coordinate set the piece on the board?
-  end
-
   def clear_piece
-    #should coordinate clear the space?
     @content = "   "
   end
   

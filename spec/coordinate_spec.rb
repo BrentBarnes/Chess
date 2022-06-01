@@ -1,14 +1,15 @@
 
 require 'coordinate'
 require 'pry'
-require 'board'
-require 'piece_subclasses/pawn'
-require 'piece_subclasses/empty_space'
-require 'piece_subclasses/king'
-require 'piece_subclasses/queen'
-require 'piece_subclasses/rook'
-require 'piece_subclasses/knight'
-require 'piece_subclasses/bishop'
+# require 'board'
+# require 'piece'
+# require 'piece_subclasses/pawn'
+# require 'piece_subclasses/empty_space'
+# require 'piece_subclasses/king'
+# require 'piece_subclasses/queen'
+# require 'piece_subclasses/rook'
+# require 'piece_subclasses/knight'
+# require 'piece_subclasses/bishop'
 
 describe Coordinate do
 

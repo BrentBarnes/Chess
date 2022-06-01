@@ -1,5 +1,4 @@
 
-#The Game class is responsible for too many things
 class Game
 
   attr_reader :board, :turn

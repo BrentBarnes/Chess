@@ -1,7 +1,7 @@
 
 class EmptySpace < Piece
 
-  def initialize(color)
+  def initialize(color=nil)
     @color = nil
   end
 
