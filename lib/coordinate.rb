@@ -1,6 +1,6 @@
 
 # require_relative 'valid_piece_moves'
-require_relative 'empty_space'
+# require_relative 'empty_space'
 
 class Coordinate
   # include ValidPieceMoves

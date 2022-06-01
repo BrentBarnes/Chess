@@ -1,16 +1,16 @@
 
-require 'colorize'
+# require 'colorize'
 
-require_relative 'pawn'
-require_relative 'empty_space'
-require_relative 'rook'
-require_relative 'knight'
-require_relative 'bishop'
-require_relative 'queen'
-require_relative 'king'
-require_relative 'white_team'
-require_relative 'black_team'
-require_relative 'coordinate'
+# require_relative 'pawn'
+# require_relative 'empty_space'
+# require_relative 'rook'
+# require_relative 'knight'
+# require_relative 'bishop'
+# require_relative 'queen'
+# require_relative 'king'
+# require_relative 'white_team'
+# require_relative 'black_team'
+# require_relative 'coordinate'
 
 class Board
 
