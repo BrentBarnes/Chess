@@ -12,14 +12,6 @@ class Coordinate
     @content = "   "
     @name = array_to_chess_coord
     @piece = EmptySpace.new
-    @up = space_up
-    @up_right = alter_name(1,1)
-    @right = alter_name(1,0)
-    @down_right = alter_name(1,-1)
-    @down = alter_name(0,-1)
-    @down_left = alter_name(-1,-1)
-    @left = alter_name(-1,0)
-    @up_left = alter_name(-1,1)
   end
 
   def clear_piece
@@ -38,6 +30,10 @@ class Coordinate
 
   def occupied?
     content[1] != ' ' ? true : false
+  end
+
+  def ==(other)
+
   end
 
   #does this work better in Coordinate or Board
@@ -76,4 +72,35 @@ class Coordinate
     spaces
   end
 
+  def up
+    Coordinate.new(row - 1, column)
+  end
+
+  def up_right
+    Coordinate.new(row - 1, column + 1)
+  end
+
+  def right
+    Coordinate.new(row, column + 1)
+  end
+
+  def down_right
+    Coordinate.new(row + 1, column + 1)
+  end
+
+  def down
+    Coordinate.new(row + 1, column)
+  end
+
+  def down_left
+    Coordinate.new(row + 1, column - 1)
+  end
+
+  def left
+    Coordinate.new(row, column - 1)
+  end
+
+  def up_left
+    Coordinate.new(row - 1, column - 1)
+  end
 end
