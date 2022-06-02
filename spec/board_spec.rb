@@ -1,7 +1,5 @@
 
-require 'pry'
-require 'board'
-require 'coordinate'
+require_relative '../lib/main'
 
 describe Board do
 
@@ -24,10 +22,25 @@ describe Board do
       end
 
       it 'returns selected occupied coordinate object' do
-        board.place_piece(WPawn.new, 'd2')
+        board.place_piece(Pawn.new('white'), 'd2')
         white_pawn = "\u265F".encode('utf-8')
         space = board.space_at('d2')
         expect(space.content).to eq(" #{white_pawn} ")
+      end
+    end
+
+    describe '#in_bounds?' do
+      subject(:board) { described_class.new }
+      context 'when coordinate is in bounds' do
+        it 'returns true' do
+          expect(board.in_bounds?('f3')).to eq(true)
+        end
+      end
+  
+      context 'when coordinate is not bounds' do
+        it 'returns false' do
+          expect(board.in_bounds?('z9')).to eq(false)
+        end
       end
     end
 
@@ -36,7 +49,7 @@ describe Board do
       context 'when placing a white pawn at d2' do
         it 'sets a white pawn at d2' do
           space = board.board[6][3]
-          board.place_piece(WPawn.new, 'd2')
+          board.place_piece(Pawn.new('white'), 'd2')
           expect(space.content).to eq(" #{"\u265F".encode('utf-8')} ")
         end
       end
@@ -74,5 +87,23 @@ describe Board do
         end
       end
     end
+
+    # describe '#space_up' do
+    #   subject(:board) { described_class.new }
+    #   context 'when given space d2' do
+    #     it 'returns the space object for d3' do
+    #       space_above = board.board[5][3]
+    #       expect(board.space_up('d2')).to eq(space_above)
+    #     end
+
+    #     it 'updates space_objects up instance variable' do
+    #       space_d2 = board.board[6][3]
+    #       space_above = board.board[5][3]
+    #       board.space_up('d2')
+    #       up = space_d2.instance_variable_get(:@up)
+    #       expect(up).to eq(space_above)
+    #     end
+    #   end
+    # end
   end
 end

@@ -13,7 +13,7 @@ class Pawn < Piece
     end
   end
 
-  def moves
+  def directions
 
   end
 end

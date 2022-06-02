@@ -1,10 +1,11 @@
 
+require_relative 'main'
+
 class Board
 
   attr_accessor :board, :coordinate, :p1_graveyard, :p2_graveyard
 
   def initialize
-    @main = Main.new
     @board = create_board
     @p1_graveyard = []
     @p2_graveyard = []
@@ -14,7 +15,7 @@ class Board
     array = Array.new(8) {Array.new(8)}
     array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
-        array[row_index][column_index] = Coordinate.new(row_index, column_index)
+        array[row_index][column_index] = Coordinate.new(row_index, column_index, Game.new)
       end
     end
   end
@@ -45,6 +46,13 @@ class Board
   def space_at(coordinate)
     board.flatten.find { |space| space.name == coordinate }
   end
+
+  def in_bounds?(coordinate)
+    valid_length = coordinate.length == 2
+    valid_row = coordinate[0].between?('a','h')
+    valid_column = coordinate[1].between?('1','8')
+    valid_length && valid_row && valid_column ? true : false
+  end
   
   def set_pieces_on_board
     white_team = WhiteTeam.new
@@ -72,5 +80,11 @@ class Board
     ['a2','b2','c2','d2','e2','f2','g2','h2',
     'a1','b1','c1','d1','e1','f1','g1','h1']
   end
-  
+
+  # def space_up(coordinate)
+  #   current_space = space_at(coordinate)
+  #   above_coordinate = current_space.alter_name(coordinate,0,1)
+  #   above_space = space_at(above_coordinate)
+  #   current_space.up = above_space
+  # end
 end

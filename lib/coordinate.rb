@@ -1,17 +1,19 @@
 
+require_relative 'main'
+
 class Coordinate
 
-  attr_accessor :row, :column, :content, :name, :piece
+  attr_accessor :row, :column, :content, :name, :piece, :game
   attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
 
-  def initialize(row, column)
-    @main = Main.new
+  def initialize(row, column, game)
+    @game = game
     @row = row
     @column = column
     @content = "   "
     @name = array_to_chess_coord
     @piece = EmptySpace.new
-    @up = alter_name(0,1)
+    @up = space_up
     @up_right = alter_name(1,1)
     @right = alter_name(1,0)
     @down_right = alter_name(1,-1)
@@ -39,19 +41,28 @@ class Coordinate
     content[1] != ' ' ? true : false
   end
 
+  #does this work better in Coordinate or Board
   def in_bounds?
-    !!board.board.flatten.find { |space| space.name == name }
+    valid_length = name.length == 2
+    valid_row = name[0].between?('a','h')
+    valid_column = name[1].between?('1','8')
+    valid_length && valid_row && valid_column ? true : false
   end
 
   def update_piece_and_content(piece_object)
     @piece = piece_object
-    @content = " #{piece_object.symbol} "
+    @content = " #{piece_object.to_s} "
   end
 
   def alter_name(space=name, x_adj, y_adj)
     new_row = (space[1].to_i + y_adj).to_s
     new_column = (space[0].ord + x_adj).chr
     new_column + new_row
+  end
+
+  def space_up
+    coordinate_above = alter_name(name,0,1)
+    board.space_at(coordinate_above)
   end
 
   def all_spaces_in_direction(space, x_adj, y_adj)

@@ -1,7 +1,5 @@
 
-require 'pry'
-require 'game'
-require 'board'
+require_relative '../lib/main'
 
 describe Game do
 
@@ -103,13 +101,12 @@ describe Game do
     let(:black_space) { board.board[5][1] }
     let(:empty_space) { board.board[5][2] }
     before do
-      board.place_piece(BPawn.new, 'b3')
+      board.place_piece(Pawn.new('black'), 'b3')
     end
     
     context 'when the selected space has a white pawn' do
-      it 'returns the piece on space a3' do
-        # binding.pry
-        board.place_piece(WPawn.new, 'a3')
+      xit 'returns the piece on space a3' do
+        board.place_piece(Pawn.new('white'), 'a3')
         allow(game).to receive(:gets).and_return('a3')
         expect(game.get_start_position).to eq('a3')
       end

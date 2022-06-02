@@ -1,6 +1,5 @@
 
-require 'piece'
-require 'piece_subclasses/king'
+require_relative '../lib/main'
 
 describe Piece do
 

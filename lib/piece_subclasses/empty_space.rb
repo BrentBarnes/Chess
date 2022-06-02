@@ -9,7 +9,7 @@ class EmptySpace < Piece
     ' '
   end
 
-  def moves
+  def directions
     nil
   end
 end

@@ -1,12 +1,14 @@
 
+require_relative 'main'
+
 class WhiteTeam
 
   def pieces
     [
-    WPawn.new, WPawn.new, WPawn.new, WPawn.new,
-    WPawn.new, WPawn.new, WPawn.new, WPawn.new,
-    WRook.new, WKnight.new, WBishop.new, WQueen.new,
-    WKing.new, WBishop.new, WKnight.new, WRook.new
+    Pawn.new('white'), Pawn.new('white'), Pawn.new('white'), Pawn.new('white'),
+    Pawn.new('white'), Pawn.new('white'), Pawn.new('white'), Pawn.new('white'),
+    Rook.new('white'), Knight.new('white'), Bishop.new('white'), Queen.new('white'),
+    King.new('white'), Bishop.new('white'), Knight.new('white'), Rook.new('white')
     ]
   end
 

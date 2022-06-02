@@ -3,10 +3,10 @@ class BlackTeam
 
   def pieces
     [
-    BRook.new, BKnight.new, BBishop.new, BQueen.new,
-    BKing.new, BBishop.new, BKnight.new, BRook.new,
-    BPawn.new, BPawn.new, BPawn.new, BPawn.new,
-    BPawn.new, BPawn.new, BPawn.new, BPawn.new
+      Rook.new('black'), Knight.new('black'), Bishop.new('black'), Queen.new('black'),
+      King.new('black'), Bishop.new('black'), Knight.new('black'), Rook.new('black'),
+      Pawn.new('black'), Pawn.new('black'), Pawn.new('black'), Pawn.new('black'),
+      Pawn.new('black'), Pawn.new('black'), Pawn.new('black'), Pawn.new('black')
     ]
   end
 

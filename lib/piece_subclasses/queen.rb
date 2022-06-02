@@ -13,7 +13,7 @@ class Queen < Piece
     end
   end
 
-  def moves
+  def directions
     [[0,1],[1,1],[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
   end
 end
