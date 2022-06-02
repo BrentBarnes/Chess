@@ -15,7 +15,7 @@ class Board
     array = Array.new(8) {Array.new(8)}
     array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
-        array[row_index][column_index] = Coordinate.new(row_index, column_index, Game.new)
+        array[row_index][column_index] = Coordinate.new(row_index, column_index)
       end
     end
   end

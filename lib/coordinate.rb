@@ -6,8 +6,7 @@ class Coordinate
   attr_accessor :row, :column, :content, :name, :piece, :game
   attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
 
-  def initialize(row, column, game)
-    @game = game
+  def initialize(row, column)
     @row = row
     @column = column
     @content = "   "
