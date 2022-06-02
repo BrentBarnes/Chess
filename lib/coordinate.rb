@@ -1,21 +1,19 @@
 
-require_relative 'miscellaneous'
-require_relative 'valid_piece_moves'
+require_relative 'main'
 
 class Coordinate
-  include Miscellaneous
-  include ValidPieceMoves
 
-  attr_accessor :row, :column, :content, :name, :piece
+  attr_accessor :row, :column, :content, :name, :piece, :game
   attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
 
-  def initialize(row, column)
+  def initialize(row, column, game)
+    @game = game
     @row = row
     @column = column
     @content = "   "
     @name = array_to_chess_coord
-    @piece = get_piece_on_space
-    @up = alter_name(0,1)
+    @piece = EmptySpace.new
+    @up = space_up
     @up_right = alter_name(1,1)
     @right = alter_name(1,0)
     @down_right = alter_name(1,-1)
@@ -23,11 +21,6 @@ class Coordinate
     @down_left = alter_name(-1,-1)
     @left = alter_name(-1,0)
     @up_left = alter_name(-1,1)
-  end
-
-  def set_piece(color_letter, piece_name)
-    piece = create_piece(color_letter, piece_name)
-    @content = " #{piece} "
   end
 
   def clear_piece
@@ -40,27 +33,36 @@ class Coordinate
     chess_column + chess_row
   end
   
-  def space_empty?
+  def empty?
     content == "   " ? true : false
   end
-  
-  def get_name_of_piece
-    symbol = get_piece_on_space
-    @@all_pieces.each do |key, value|
-      if value == symbol
-        @piece = key.to_s
-      end
-    end
+
+  def occupied?
+    content[1] != ' ' ? true : false
   end
-    
-  def get_piece_on_space
-    content[1]
+
+  #does this work better in Coordinate or Board
+  def in_bounds?
+    valid_length = name.length == 2
+    valid_row = name[0].between?('a','h')
+    valid_column = name[1].between?('1','8')
+    valid_length && valid_row && valid_column ? true : false
+  end
+
+  def update_piece_and_content(piece_object)
+    @piece = piece_object
+    @content = " #{piece_object.to_s} "
   end
 
   def alter_name(space=name, x_adj, y_adj)
     new_row = (space[1].to_i + y_adj).to_s
     new_column = (space[0].ord + x_adj).chr
     new_column + new_row
+  end
+
+  def space_up
+    coordinate_above = alter_name(name,0,1)
+    board.space_at(coordinate_above)
   end
 
   def all_spaces_in_direction(space, x_adj, y_adj)

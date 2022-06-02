@@ -1,11 +1,7 @@
 
-require 'colorize'
-require 'pry'
-require_relative 'miscellaneous'
-require_relative 'coordinate'
+require_relative 'main'
 
 class Board
-  include Miscellaneous
 
   attr_accessor :board, :coordinate, :p1_graveyard, :p2_graveyard
 
@@ -19,7 +15,7 @@ class Board
     array = Array.new(8) {Array.new(8)}
     array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
-        array[row_index][column_index] = Coordinate.new(row_index, column_index)
+        array[row_index][column_index] = Coordinate.new(row_index, column_index, Game.new)
       end
     end
   end
@@ -47,11 +43,48 @@ class Board
     puts "   a  b  c  d  e  f  g  h"
   end
 
+  def space_at(coordinate)
+    board.flatten.find { |space| space.name == coordinate }
+  end
+
+  def in_bounds?(coordinate)
+    valid_length = coordinate.length == 2
+    valid_row = coordinate[0].between?('a','h')
+    valid_column = coordinate[1].between?('1','8')
+    valid_length && valid_row && valid_column ? true : false
+  end
+  
+  def set_pieces_on_board
+    white_team = WhiteTeam.new
+    black_team = BlackTeam.new
+
+    i = 0
+    while i < 16
+      place_piece(white_team.pieces[i], white_starting_spaces[i])
+      place_piece(black_team.pieces[i], black_starting_spaces[i])
+      i += 1
+    end
+  end
+
+  def place_piece(piece_object, coordinate)
+    space = space_at(coordinate)
+    space.update_piece_and_content(piece_object)
+  end
+
+  def black_starting_spaces
+    ['a8','b8','c8','d8','e8','f8','g8','h8',
+    'a7','b7','c7','d7','e7','f7','g7','h7']
+  end
+
+  def white_starting_spaces
+    ['a2','b2','c2','d2','e2','f2','g2','h2',
+    'a1','b1','c1','d1','e1','f1','g1','h1']
+  end
+
+  # def space_up(coordinate)
+  #   current_space = space_at(coordinate)
+  #   above_coordinate = current_space.alter_name(coordinate,0,1)
+  #   above_space = space_at(above_coordinate)
+  #   current_space.up = above_space
+  # end
 end
-
-# game = Board.new
-# game.create_board
-# game.board[6][3].set_piece('w', 'pawn')
-# puts game.board[6][3]
-
-# game.print_board
