@@ -16,12 +16,12 @@ describe Board do
     describe '#space_at' do
     subject(:board) { described_class.new }
     context 'when selection is valid' do
-      it 'returns selected empty coordinate object' do
+      it 'returns selected empty cell object' do
         coord_obj = board.board[6][3]
         expect(board.space_at('d2')).to eq(coord_obj)
       end
 
-      it 'returns selected occupied coordinate object' do
+      it 'returns selected occupied cell object' do
         board.place_piece(Pawn.new('white'), 'd2')
         white_pawn = "\u265F".encode('utf-8')
         space = board.space_at('d2')

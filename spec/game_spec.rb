@@ -58,7 +58,7 @@ describe Game do
   # describe '#space_at' do
   #   subject(:game) { described_class.new(Board.new) }
   #   context 'when selection is valid' do
-  #     it 'returns selected coordinate object' do
+  #     it 'returns selected cell object' do
   #       coord_obj = game.board.board[6][3]
   #       expect(game.space_at('d2')).to eq(coord_obj)
   #     end

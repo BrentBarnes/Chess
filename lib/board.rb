@@ -3,7 +3,7 @@ require_relative 'main'
 
 class Board
 
-  attr_accessor :board, :coordinate, :p1_graveyard, :p2_graveyard
+  attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard
 
   def initialize
     @board = create_board
@@ -15,7 +15,7 @@ class Board
     array = Array.new(8) {Array.new(8)}
     array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
-        array[row_index][column_index] = Coordinate.new(row_index, column_index)
+        array[row_index][column_index] = Cell.new(row_index, column_index)
       end
     end
   end

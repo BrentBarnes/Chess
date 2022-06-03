@@ -3,10 +3,9 @@ require_relative 'main'
 
 class Game
 
-  attr_reader :board, :turn
+  attr_reader :turn
 
   def initialize
-    @board = Board.new
     @turn = 1
   end
 

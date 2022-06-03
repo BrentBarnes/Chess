@@ -1,12 +1,13 @@
 
 require_relative 'main'
 
-class Coordinate
+class Cell
 
   attr_accessor :row, :column, :content, :name, :piece, :game
   attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
 
   def initialize(row, column)
+    @game = Game.new
     @row = row
     @column = column
     @content = "   "
@@ -33,15 +34,19 @@ class Coordinate
   end
 
   def ==(other)
-
+    row == other.row && column == other.column
   end
 
-  #does this work better in Coordinate or Board
+  #does this work better in Cell or Board
   def in_bounds?
     valid_length = name.length == 2
     valid_row = name[0].between?('a','h')
     valid_column = name[1].between?('1','8')
     valid_length && valid_row && valid_column ? true : false
+  end
+
+  def same_team_on_space?
+    piece.same_team?(game.player1_turn?)
   end
 
   def update_piece_and_content(piece_object)
@@ -56,8 +61,8 @@ class Coordinate
   end
 
   def space_up
-    coordinate_above = alter_name(name,0,1)
-    board.space_at(coordinate_above)
+    cell_above = alter_name(name,0,1)
+    board.space_at(cell_above)
   end
 
   def all_spaces_in_direction(space, x_adj, y_adj)
@@ -73,34 +78,34 @@ class Coordinate
   end
 
   def up
-    Coordinate.new(row - 1, column)
+    Cell.new(row - 1, column)
   end
 
   def up_right
-    Coordinate.new(row - 1, column + 1)
+    Cell.new(row - 1, column + 1)
   end
 
   def right
-    Coordinate.new(row, column + 1)
+    Cell.new(row, column + 1)
   end
 
   def down_right
-    Coordinate.new(row + 1, column + 1)
+    Cell.new(row + 1, column + 1)
   end
 
   def down
-    Coordinate.new(row + 1, column)
+    Cell.new(row + 1, column)
   end
 
   def down_left
-    Coordinate.new(row + 1, column - 1)
+    Cell.new(row + 1, column - 1)
   end
 
   def left
-    Coordinate.new(row, column - 1)
+    Cell.new(row, column - 1)
   end
 
   def up_left
-    Coordinate.new(row - 1, column - 1)
+    Cell.new(row - 1, column - 1)
   end
 end

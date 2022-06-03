@@ -1,9 +1,32 @@
-Hi there! I've run into another design flaw with my chess game. I've been building a module called `ValidPieceMoves` that contains all of the functions I'd need to calculate where a piece is allowed to move on the board. I think it's also important to note that I have a class the creates each space on the board as its own object called `Coordinate`. This class is supposed to hold all of the information that a coordinate might need to know. I created Coordinate as a way to remove data clump from other classes, and it's worked great!
+I keep running into better and better problems, so that's a good thing!
+Earlier, it was recommended to me to use overriding equivalents, and I'm trying to figure out if I'm using it right. I've made a  `MoveManager` class that will try to validate moves for each piece. I have 3 methods in it so far: `#surrounding_cells` which finds all of the cells that surround a Cell object. This uses `Cell` methods like:
+```ruby
+def up
+  Cell.new(row - 1, column)
+end
+```
+meaning, it creates new Cell objects with every call. Because of this, say our current Cell is 'd3',  if the previously initialized `Board` has a piece on 'd4', it will not register on this newly created Cell. `#surrounding_cells` collects these in an array and gets used in the next method: `#convert_to_board`. 
+This is where I attempt to convert these new Cell objects into actual board objects by overriding equivalents.
+```ruby
+def convert_to_board(space_object)
+    non_board = surrounding_cells(space_object)
+    board_cells = []
 
-After building the `ValidPieceMoves` module, I thought I'd just be able to include that module in my `Coordinate` class and be on my jolly way! However, I've run into some unidentified function errors when I try to use functions from `ValidPieceMoves` in my `Coordinate` class. I think this is because my `ValidPieceMoves` module uses functions like `space_at` which lives in my `Game` class. As you can see, I think I've lost control of my classes and modules and they're getting tangled up, and I'm beginning to think that I designed something wrong.
+    non_board.each do |fake_cell|
+      board.board.flatten.find { |cell| board_cells << cell if cell == fake_cell }
+    end
+    board_cells
+end
+```
+hypothetically, this should scan over the `Board` object and find a REAL Board cell that matches the FAKE board cell, and push that REAL cell into a new array called `board_cells` 
 
-I think I could fix the issue by putting all of the functions from `ValidPieceMoves` in my `Coordinate` class. This would further remove data clumping because I wouldn't have to keep selecting the space in every function. However, I don't know if `Coordinate` would still be following the single responsibility principle if I also made it in charge of determining valid spaces? That's originally why I had the idea of keeping the responsibility of determining valid spaces separate in its own module. 
+The third method is `#valid_king_moves`. When I test this, this is where things go wrong. It returns EVERY space that surrounds the king. However, when I place a piece above the king on 'd4' in a test, it doesn't register somewhere in the code that there's a piece on that space.
 
-Would it be a violation if I migrated all of the functions from `ValidPieceMoves` into my `Coordinate` class? If it is a violation, I'm not sure what else I could do to remedy this situation?
-
-Here's my repo: https://github.com/BrentBarnes/Chess
+My guess is that it's because I've injected a new `Board` object into `MoveManager` that is a new object instead of a reference to the already existing board.
+```ruby
+def initialize(board)
+  @game = Game.new
+  @board = board
+end
+```
+Is this what's causing the issue, or am I missing something? Am I overriding equivalents correctly?
