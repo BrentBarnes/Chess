@@ -9,10 +9,10 @@ meaning, it creates new Cell objects with every call. Because of this, say our c
 This is where I attempt to convert these new Cell objects into actual board objects by overriding equivalents.
 ```ruby
 def convert_to_board(space_object)
-    non_board = surrounding_cells(space_object)
+    fake_cells = surrounding_cells(space_object)
     board_cells = []
 
-    non_board.each do |fake_cell|
+    fake_cells.each do |fake_cell|
       board.board.flatten.find { |cell| board_cells << cell if cell == fake_cell }
     end
     board_cells
@@ -22,7 +22,7 @@ hypothetically, this should scan over the `Board` object and find a REAL Board c
 
 The third method is `#valid_king_moves`. When I test this, this is where things go wrong. It returns EVERY space that surrounds the king. However, when I place a piece above the king on 'd4' in a test, it doesn't register somewhere in the code that there's a piece on that space.
 
-My guess is that it's because I've injected a new `Board` object into `MoveManager` that is a new object instead of a reference to the already existing board.
+My guess: because I've injected a new `Board` object into `MoveManager` that is a new object instead of a reference to the already existing board.
 ```ruby
 def initialize(board)
   @game = Game.new
@@ -30,3 +30,4 @@ def initialize(board)
 end
 ```
 Is this what's causing the issue, or am I missing something? Am I overriding equivalents correctly?
+Repo: https://github.com/BrentBarnes/Chess/tree/oo_refactor

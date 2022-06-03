@@ -29,6 +29,18 @@ describe Board do
       end
     end
 
+    describe '#get' do
+      subject(:board) { described_class.new }
+      context 'when selection is valid' do
+        it ' returns the cell object' do
+          cell = board.board[6][3]
+          x = 3
+          y = 6
+          expect(board.get(x, y)).to eq(cell)
+        end
+      end
+    end
+
     describe '#in_bounds?' do
       subject(:board) { described_class.new }
       context 'when coordinate is in bounds' do

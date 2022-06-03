@@ -4,7 +4,8 @@ require_relative '../lib/main'
 describe Cell do
 
   describe '#empty?' do
-    subject(:cell) { described_class.new(6,3) }
+    let(:board) { Board.new }
+    subject(:cell) { described_class.new(6,3,board) }
     context 'when a space is empty' do
       it 'returns true' do
         expect(cell.empty?).to be true
@@ -20,7 +21,8 @@ describe Cell do
   end
 
   describe '#clear_piece' do
-    subject(:cell) { described_class.new(6,3) }
+    let(:board) { Board.new }
+    subject(:cell) { described_class.new(6,3,board) }
     context 'when a space with a piece is selected' do
       it 'clears the piece from that space' do
         cell.content = 'occupied'
@@ -31,43 +33,6 @@ describe Cell do
     end
   end
 
-  #comprimised after replacing instance variables with methods for directions
-  describe '#alter_name' do
-    subject(:cell) { described_class.new(2,2) }
-    context 'when space selected is c6' do
-      xit 'returns the name of the space above' do
-        expect(cell.up).to eq('c7')
-      end
-
-      xit 'returns the name of the space above and right' do
-        expect(cell.up_right).to eq('d7')
-      end
-
-      xit 'returns the name of the space to the right' do
-        expect(cell.right).to eq('d6')
-      end
-
-      xit 'returns the name of the space below and right' do
-        expect(cell.down_right).to eq('d5')
-      end
-
-      xit 'returns the name of the space below' do
-        expect(cell.down).to eq('c5')
-      end
-
-      xit 'returns the name of the space below and left' do
-        expect(cell.down_left).to eq('b5')
-      end
-
-      xit 'returns the name of the space to the left' do
-        expect(cell.left).to eq('b6')
-      end
-
-      xit 'returns the name of the space above and left' do
-        expect(cell.up_left).to eq('b7')
-      end
-    end
-
     context 'when given a cell input' do
       it 'alters the name of the cell given' do
         expect(cell.alter_name('e3',0,1)).to eq('e4')
@@ -76,7 +41,8 @@ describe Cell do
   end
 
   describe '#all_spaces_in_direction' do
-    subject(:cell) { described_class.new(3,1)}
+    let(:board) { Board.new }
+    subject(:cell) { described_class.new(3,1,board)}
     context 'when space name is b5' do
       it 'returns the name of all spaces in the up direction' do
         above = ['b6','b7','b8']
@@ -130,6 +96,25 @@ describe Cell do
       it 'returns the name of all spaces in the up left direction' do
         up_left = ['a6']
         expect(cell.all_spaces_in_direction('b5',-1,1)).to eq(up_left)
+      end
+    end
+
+    describe '#up' do
+      let(:board) { Board.new }
+      subject(:cell) { described_class.new(1,3,board)}
+      context 'when the current space is d7' do
+        it 'returns the d8 cell object above' do
+          up_cell = board.space_at('d8')
+          expect(cell.up).to eq(up_cell)
+        end
+      end
+
+      context 'when a pawn is on the space above' do
+        it 'returns the piece in the cell object above' do
+          board.place_piece(Pawn.new('white'), 'd8')
+          up_cell = board.space_at('d8')
+          expect(cell.up.piece.to_s).to eq('♟')
+        end
       end
     end
   end

@@ -3,10 +3,11 @@ require_relative 'main'
 
 class Cell
 
-  attr_accessor :row, :column, :content, :name, :piece, :game
+  attr_accessor :row, :column, :content, :name, :piece, :game, :board
   attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
 
-  def initialize(row, column)
+  def initialize(row, column, board)
+    @board = board
     @game = Game.new
     @row = row
     @column = column
@@ -54,12 +55,6 @@ class Cell
     @content = " #{piece_object.to_s} "
   end
 
-  def alter_name(space=name, x_adj, y_adj)
-    new_row = (space[1].to_i + y_adj).to_s
-    new_column = (space[0].ord + x_adj).chr
-    new_column + new_row
-  end
-
   def space_up
     cell_above = alter_name(name,0,1)
     board.space_at(cell_above)
@@ -78,34 +73,34 @@ class Cell
   end
 
   def up
-    Cell.new(row - 1, column)
+    board.get(column, row - 1)
   end
 
   def up_right
-    Cell.new(row - 1, column + 1)
+    board.get(row - 1, column + 1)
   end
 
   def right
-    Cell.new(row, column + 1)
+    board.get(row, column + 1)
   end
 
   def down_right
-    Cell.new(row + 1, column + 1)
+    board.get(row + 1, column + 1)
   end
 
   def down
-    Cell.new(row + 1, column)
+    board.get(row + 1, column)
   end
 
   def down_left
-    Cell.new(row + 1, column - 1)
+    board.get(row + 1, column - 1)
   end
 
   def left
-    Cell.new(row, column - 1)
+    board.get(row, column - 1)
   end
 
   def up_left
-    Cell.new(row - 1, column - 1)
+    board.get(row - 1, column - 1)
   end
 end

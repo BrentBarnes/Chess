@@ -15,7 +15,7 @@ class Board
     array = Array.new(8) {Array.new(8)}
     array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
-        array[row_index][column_index] = Cell.new(row_index, column_index)
+        array[row_index][column_index] = Cell.new(row_index, column_index, self)
       end
     end
   end
@@ -45,6 +45,10 @@ class Board
 
   def space_at(coordinate)
     board.flatten.find { |space| space.name == coordinate }
+  end
+
+  def get(x,y)
+    board.flatten.find { |space| space.column == x && space.row == y }
   end
 
   def in_bounds?(coordinate)
