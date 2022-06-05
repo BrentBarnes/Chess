@@ -9,6 +9,10 @@ class EmptySpace < Piece
     ' '
   end
 
+  def same_team?(player1_turn)
+    false
+  end
+
   def directions
     nil
   end

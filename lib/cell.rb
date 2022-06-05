@@ -34,10 +34,6 @@ class Cell
     content[1] != ' ' ? true : false
   end
 
-  def ==(other)
-    row == other.row && column == other.column
-  end
-
   #does this work better in Cell or Board
   def in_bounds?
     valid_length = name.length == 2
@@ -46,8 +42,16 @@ class Cell
     valid_length && valid_row && valid_column ? true : false
   end
 
+  def out_of_bounds?
+    in_bounds? == false ? true : false
+  end
+
   def same_team_on_space?
     piece.same_team?(game.player1_turn?)
+  end
+
+  def enemy_team_on_space?
+    piece.enemy_team?(game.player1_turn?)
   end
 
   def update_piece_and_content(piece_object)
@@ -60,6 +64,7 @@ class Cell
     board.space_at(cell_above)
   end
 
+  #compromised because #alter_name was taken away
   def all_spaces_in_direction(space, x_adj, y_adj)
     spaces = []
     current = space
@@ -77,30 +82,41 @@ class Cell
   end
 
   def up_right
-    board.get(row - 1, column + 1)
+    board.get(column + 1, row - 1)
   end
 
   def right
-    board.get(row, column + 1)
+    board.get(column + 1, row)
   end
 
   def down_right
-    board.get(row + 1, column + 1)
+    board.get(column + 1, row + 1)
   end
 
   def down
-    board.get(row + 1, column)
+    board.get(column, row + 1)
   end
 
   def down_left
-    board.get(row + 1, column - 1)
+    board.get(column - 1, row + 1)
   end
 
   def left
-    board.get(row, column - 1)
+    board.get(column - 1, row)
   end
 
   def up_left
-    board.get(row - 1, column - 1)
+    board.get(column - 1, row - 1)
+  end
+
+  def knight_cells
+    potential_cells = []
+    directions = [up&.up&.right, right&.right&.up, right&.right&.down, down&.down&.right,
+                  down&.down&.left, left&.left&.down, left&.left&.up, up&.up&.left]
+
+    directions.each do |direction|
+      potential_cells << direction.name unless direction.nil?
+    end
+    potential_cells
   end
 end

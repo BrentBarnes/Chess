@@ -23,6 +23,18 @@ class Piece
       player1_turn ? true : false
     elsif black?
       player1_turn ? false : true
+    elsif color.nil?
+      false
+    end
+  end
+
+  def enemy_team?(player1_turn)
+    if white?
+      player1_turn ? false : true
+    elsif black?
+      player1_turn ? true : false
+    elsif color.nil?
+      false
     end
   end
 
