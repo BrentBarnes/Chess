@@ -4,7 +4,7 @@ require_relative '../lib/main'
 describe Board do
 
   describe '#create_board' do
-    subject(:board) { described_class.new }
+    subject(:board) { described_class.new(Game.new) }
     context 'when spaces are created for the board' do
       it 'can return the name of the space when asked' do
         board.create_board
@@ -14,7 +14,7 @@ describe Board do
   end
 
     describe '#space_at' do
-    subject(:board) { described_class.new }
+    subject(:board) { described_class.new(Game.new) }
     context 'when selection is valid' do
       it 'returns selected empty cell object' do
         coord_obj = board.board[6][3]
@@ -30,7 +30,7 @@ describe Board do
     end
 
     describe '#get' do
-      subject(:board) { described_class.new }
+      subject(:board) { described_class.new(Game.new) }
       context 'when selection is valid' do
         it ' returns the cell object' do
           cell = board.board[6][3]
@@ -42,7 +42,7 @@ describe Board do
     end
 
     describe '#in_bounds?' do
-      subject(:board) { described_class.new }
+      subject(:board) { described_class.new(Game.new) }
       context 'when coordinate is in bounds' do
         it 'returns true' do
           expect(board.in_bounds?('f3')).to eq(true)
@@ -57,7 +57,7 @@ describe Board do
     end
 
     describe '#place_piece' do
-      subject(:board) { described_class.new }
+      subject(:board) { described_class.new(Game.new) }
       context 'when placing a white pawn at d2' do
         it 'sets a white pawn at d2' do
           space = board.board[6][3]
@@ -68,7 +68,7 @@ describe Board do
     end
 
     describe '#set_pieces_on_board' do
-      subject(:board) { described_class.new }
+      subject(:board) { described_class.new(Game.new) }
       before do
         board.set_pieces_on_board
       end

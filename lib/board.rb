@@ -4,8 +4,10 @@ require_relative 'main'
 class Board
 
   attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard
+  attr_reader :game
 
-  def initialize
+  def initialize(game)
+    @game = game
     @board = create_board
     @p1_graveyard = []
     @p2_graveyard = []
@@ -15,7 +17,7 @@ class Board
     array = Array.new(8) {Array.new(8)}
     array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
-        array[row_index][column_index] = Cell.new(row_index, column_index, self)
+        array[row_index][column_index] = Cell.new(row_index, column_index, game, self)
       end
     end
   end
@@ -48,7 +50,7 @@ class Board
   end
 
   def get(x,y)
-    board.flatten.find { |space| space.column == x && space.row == y }
+    board.flatten.find { |space| space.column == x && space.row == y } || NullCell.new
   end
 
   def in_bounds?(coordinate)
@@ -84,11 +86,4 @@ class Board
     ['a2','b2','c2','d2','e2','f2','g2','h2',
     'a1','b1','c1','d1','e1','f1','g1','h1']
   end
-
-  # def space_up(coordinate)
-  #   current_space = space_at(coordinate)
-  #   above_coordinate = current_space.alter_name(coordinate,0,1)
-  #   above_space = space_at(above_coordinate)
-  #   current_space.up = above_space
-  # end
 end

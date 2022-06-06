@@ -4,11 +4,10 @@ require_relative 'main'
 class Cell
 
   attr_accessor :row, :column, :content, :name, :piece, :game, :board
-  attr_reader :up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left, :piece_valid_moves
 
-  def initialize(row, column, board)
+  def initialize(row, column, game, board)
+    @game = game
     @board = board
-    @game = Game.new
     @row = row
     @column = column
     @content = "   "
@@ -64,19 +63,6 @@ class Cell
     board.space_at(cell_above)
   end
 
-  #compromised because #alter_name was taken away
-  def all_spaces_in_direction(space, x_adj, y_adj)
-    spaces = []
-    current = space
-    next_space = alter_name(current, x_adj, y_adj)
-    until !next_space[0].between?('a','h') || !next_space[1].between?('1','8') 
-      current = next_space
-      next_space = alter_name(current, x_adj, y_adj)
-      spaces << current
-    end
-    spaces
-  end
-
   def up
     board.get(column, row - 1)
   end
@@ -110,13 +96,25 @@ class Cell
   end
 
   def knight_cells
-    potential_cells = []
-    directions = [up&.up&.right, right&.right&.up, right&.right&.down, down&.down&.right,
-                  down&.down&.left, left&.left&.down, left&.left&.up, up&.up&.left]
+    directions = [up.up.right, right.right.up, right.right.down, down.down.right,
+                  down.down.left, left.left.down, left.left.up, up.up.left]
 
-    directions.each do |direction|
-      potential_cells << direction.name unless direction.nil?
+    directions.filter_map { |direction| direction unless direction.name.nil? }
+  end
+
+  def pawn_cells
+    white_directions = [up, up.up, up_left, up_right]
+    black_directions = [down, down.down, down_left, down_right]
+    directions = (game.player1_turn? ? white_directions : black_directions)
+
+    directions.filter_map { |direction| direction || NullCell.new }
+  end
+
+  def pawn_home_row?
+    if game.player1_turn?
+      row == 6 ? true : false
+    elsif !game.player1_turn?
+      row == 1 ? true : false
     end
-    potential_cells
   end
 end
