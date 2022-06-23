@@ -13,7 +13,7 @@ describe Game do
   #   context 'when input is d2, d3' do
   #     it 'moves pawn one space forward' do
   #       game.move_piece('d2', 'd3')
-  #       space = game.space_at('d3')
+  #       space = game.cell_at('d3')
   #       expect(space.content).to eq(" #{pawn} ")
   #     end
   #   end
@@ -21,7 +21,7 @@ describe Game do
   #   context 'when input is d2, d3' do
   #     it 'clears the from space' do
   #       game.move_piece('d2', 'd3')
-  #       space = game.space_at('d2')
+  #       space = game.cell_at('d2')
   #       expect(space.content).to eq("   ")
   #     end
   #   end
@@ -39,7 +39,7 @@ describe Game do
   #     it 'white pawn takes black pawn' do
   #       set_piece('b', 'pawn', 'd3')
   #       game.move_piece('d2', 'd3')
-  #       space = game.space_at('d3')
+  #       space = game.cell_at('d3')
   #       expect(space.content).to eq(" #{pawn} ")
   #     end
   #   end
@@ -55,20 +55,20 @@ describe Game do
   #   end
   # end
 
-  # describe '#space_at' do
+  # describe '#cell_at' do
   #   subject(:game) { described_class.new(Board.new) }
   #   context 'when selection is valid' do
   #     it 'returns selected cell object' do
   #       coord_obj = game.board.board[6][3]
-  #       expect(game.space_at('d2')).to eq(coord_obj)
+  #       expect(game.cell_at('d2')).to eq(coord_obj)
   #     end
   #   end
 
   #   context 'when selection is not valid' do
   #     it 'calls function again' do
   #       allow(game).to receive(:gets).and_return('z3', 'd2')
-  #       expect(game).to receive(:space_at).and_call_original.twice
-  #       game.space_at
+  #       expect(game).to receive(:cell_at).and_call_original.twice
+  #       game.cell_at
   #     end
   #   end
   # end
@@ -97,7 +97,7 @@ describe Game do
   describe '#get_start_position' do
     subject(:game) { described_class.new(Board.new) }
     let(:board) { Board.new }
-    let(:white_space) { board.space_at('a3') }
+    let(:white_space) { board.cell_at('a3') }
     let(:black_space) { board.board[5][1] }
     let(:empty_space) { board.board[5][2] }
     before do
@@ -167,7 +167,7 @@ describe Game do
   #   subject(:game) { described_class.new(Board.new) }
   #   context 'when it is player 1s turn and the piece is white' do
   #     it 'returns true' do
-  #       a1 = game.space_at('a1')
+  #       a1 = game.cell_at('a1')
   #       a1.set_piece('w', 'pawn')
         
   #       expect(game.same_team?('a1')).to be true
@@ -176,7 +176,7 @@ describe Game do
 
   #   context 'when it is player 1s turn and the piece is black' do
   #     it 'returns false' do
-  #       a1 = game.space_at('a1')
+  #       a1 = game.cell_at('a1')
   #       a1.set_piece('b', 'pawn')
   #       expect(game.same_team?('a1')).to be false
   #     end
@@ -184,7 +184,7 @@ describe Game do
 
   #   context 'when it is player 2s turn and the piece is black' do
   #     it 'returns true' do
-  #       a1 = game.space_at('a1')
+  #       a1 = game.cell_at('a1')
   #       a1.set_piece('b', 'pawn')
   #       game.instance_variable_set(:@turn, 2)
   #       expect(game.same_team?('a1')).to be true
@@ -193,7 +193,7 @@ describe Game do
     
   #   context 'when it is player 2s turn and the piece is white' do
   #     it 'returns false' do
-  #       a1 = game.space_at('a1')
+  #       a1 = game.cell_at('a1')
   #       a1.set_piece('w', 'pawn')
   #       game.instance_variable_set(:@turn, 2)
   #       expect(game.same_team?('a1')).to be false

@@ -347,7 +347,7 @@ end
 #Helper Methods
 
 def set_piece(color_letter, piece_name, coordinate)
-  space = game.space_at(coordinate)
+  space = game.cell_at(coordinate)
   piece = create_piece(color_letter, piece_name)
 
   space.content = " #{piece} "

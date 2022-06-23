@@ -15,8 +15,13 @@ class Cell
     @piece = EmptySpace.new
   end
 
-  def clear_piece
+  def clear_piece_and_content
     @content = "   "
+    @piece = EmptySpace.new
+  end
+
+  def send_piece_to_graveyard
+    game.graveyard.send_piece_to_graveyard(piece)
   end
   
   def array_to_chess_coord
@@ -30,7 +35,11 @@ class Cell
   end
 
   def occupied?
-    content[1] != ' ' ? true : false
+    if content[1] == ' ' || piece.is_a?(RedCircle)
+     false
+    else
+      true
+    end
   end
 
   #does this work better in Cell or Board
@@ -60,11 +69,23 @@ class Cell
 
   def space_up
     cell_above = alter_name(name,0,1)
-    board.space_at(cell_above)
+    board.cell_at(cell_above)
   end
 
   def up
-    board.get(column, row - 1)
+    if piece.to_s == '♙'
+      board.get(column, row + 1)
+    else
+      board.get(column, row - 1)
+    end
+  end
+
+  def up_2
+    if piece.to_s == '♙'
+      board.get(column, row + 2)
+    else
+      board.get(column, row - 2)
+    end
   end
 
   def up_right
@@ -103,17 +124,21 @@ class Cell
   end
 
   def pawn_cells
-    white_directions = [up, up.up, up_left, up_right]
-    black_directions = [down, down.down, down_left, down_right]
-    directions = (game.player1_turn? ? white_directions : black_directions)
+    directions = [up, up_2, up.left, up.right]
 
-    directions.filter_map { |direction| direction || NullCell.new }
+    directions.filter_map { |direction| direction unless direction.name.nil? }
+  end
+
+  def pawn_attacks
+    directions = [up.left, up.right]
+
+    directions.filter_map { |direction| direction.name unless direction.name.nil? || direction.same_team_on_space? }
   end
 
   def pawn_home_row?
-    if game.player1_turn?
+    if piece.to_s == '♟'
       row == 6 ? true : false
-    elsif !game.player1_turn?
+    elsif piece.to_s == '♙'
       row == 1 ? true : false
     end
   end

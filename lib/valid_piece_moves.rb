@@ -3,18 +3,18 @@ module ValidPieceMoves
 
   def valid_pawn_moves(coordinate)
     valid_moves = []
-    space = space_at(coordinate)
+    space = cell_at(coordinate)
 
     if white_pieces.include?(space.get_piece_on_space)
-      forward = space_at(space.up)
-      forward_2 = space_at(forward.up)
-      enemy_left = space_at(space.up_left)
-      enemy_right = space_at(space.up_right)
+      forward = cell_at(space.up)
+      forward_2 = cell_at(forward.up)
+      enemy_left = cell_at(space.up_left)
+      enemy_right = cell_at(space.up_right)
     elsif black_pieces.include?(space.get_piece_on_space)
-      forward = space_at(space.down)
-      forward_2 = space_at(forward.down)
-      enemy_left = space_at(space.down_left)
-      enemy_right = space_at(space.down_right)
+      forward = cell_at(space.down)
+      forward_2 = cell_at(forward.down)
+      enemy_left = cell_at(space.down_left)
+      enemy_right = cell_at(space.down_right)
     end
 
     if forward.space_empty? then valid_moves << forward.name end
@@ -60,9 +60,9 @@ module ValidPieceMoves
   end
 
   def valid_moves_in_direction(space, x_adj, y_adj)
-    current = space_at(space)
+    current = cell_at(space)
     all_spaces = current.all_spaces_in_direction(space, x_adj, y_adj)
-    next_space = space_at(all_spaces[0])
+    next_space = cell_at(all_spaces[0])
     valid_spaces = []
     
     i = 0
@@ -70,13 +70,13 @@ module ValidPieceMoves
       valid_spaces << next_space.name
       i += 1
       current = next_space
-      if i < all_spaces.length then next_space = space_at(all_spaces[i]) end
+      if i < all_spaces.length then next_space = cell_at(all_spaces[i]) end
     end
     valid_spaces
   end
 
   def valid_knight_moves(space)
-    current = space_at(space)
+    current = cell_at(space)
     x = [-1,1,2,2,1,-1,-2,-2]
     y = [2,2,1,-1,-2,-2,-1,1]
     valid_moves = []
@@ -89,7 +89,7 @@ module ValidPieceMoves
   end
 
   def valid_king_moves(space)
-    current = space_at(space)
+    current = cell_at(space)
     x = [0,1,1,1,0,-1,-1,-1]
     y = [1,1,0,-1,-1,-1,0,1]
     valid_moves = []

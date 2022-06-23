@@ -4,13 +4,17 @@ require_relative 'main'
 class Board
 
   attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard
-  attr_reader :game
+  attr_reader :game, :graveyard, :move_manager
 
-  def initialize(game)
+  def initialize(game, graveyard, move_manager)
     @game = game
     @board = create_board
-    @p1_graveyard = []
-    @p2_graveyard = []
+    @graveyard = graveyard
+  end
+
+  def set_up_board
+    create_board
+    set_pieces_on_board
   end
 
   def create_board
@@ -26,6 +30,7 @@ class Board
     
     rows = ""
     
+    graveyard.display_graveyard('white')
     puts "   a  b  c  d  e  f  g  h"
     row_number = 8
     board.each_with_index do |row, row_index|
@@ -43,9 +48,10 @@ class Board
     end
     puts rows
     puts "   a  b  c  d  e  f  g  h"
+    graveyard.display_graveyard('black')
   end
 
-  def space_at(coordinate)
+  def cell_at(coordinate)
     board.flatten.find { |space| space.name == coordinate }
   end
 
@@ -73,7 +79,7 @@ class Board
   end
 
   def place_piece(piece_object, coordinate)
-    space = space_at(coordinate)
+    space = cell_at(coordinate)
     space.update_piece_and_content(piece_object)
   end
 
@@ -85,5 +91,34 @@ class Board
   def white_starting_spaces
     ['a2','b2','c2','d2','e2','f2','g2','h2',
     'a1','b1','c1','d1','e1','f1','g1','h1']
+  end
+
+  def find_king(friendly_or_enemy)
+    board.flatten.find do |space| 
+      if game.player1_turn? && friendly_or_enemy == 'enemy' ||
+         !game.player1_turn? && friendly_or_enemy == 'friendly'
+        space.content == ' ♔ '
+      else
+        space.content == ' ♚ '
+      end
+    end
+  end
+
+  def active_king_on_cell?(cell_object)
+    piece_on_cell = cell_object.piece
+    king_on_space = piece_on_cell.is_a? King
+    piece_color = piece_on_cell.color
+    active_team = game.active_team.downcase
+
+    king_on_space && piece_color == active_team
+  end
+
+  def find_pieces(friendly_or_enemy)
+    if friendly_or_enemy == 'friendly'
+    cells = board.flatten.filter_map { |cell| cell if cell.same_team_on_space? }
+    else
+      cells = board.flatten.filter_map { |cell| cell if cell.enemy_team_on_space? }
+    end
+    cells.sort_by(&:name)
   end
 end

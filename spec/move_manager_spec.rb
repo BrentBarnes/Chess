@@ -3,9 +3,123 @@ require_relative '../lib/main'
 
 describe MoveManager do
 
+  describe '#valid_moves_for' do
+    let(:game) { Game.new }
+    subject(:move_manager) { described_class.new(game, game.board) }
+    let(:d4) { game.board.board[4][3] }
+    before do
+      set_piece('white', Queen, 'd4')
+    end
+
+    context 'when piece on space is a king' do
+      it 'runs valid_king_moves' do
+        set_piece('white', King, 'd2')
+        d2 = cell_at('d2')
+        expect(move_manager).to receive(:valid_king_moves).once
+        move_manager.valid_moves_for(d2)
+      end
+    end
+
+    context 'when piece on space is a queen' do
+      it 'runs valid_queen_moves' do
+        set_piece('white', Queen, 'd2')
+        d2 = cell_at('d2')
+        expect(move_manager).to receive(:valid_queen_moves).once
+        move_manager.valid_moves_for(d2)
+      end
+    end
+
+    context 'when piece on space is a rook' do
+      it 'runs valid_rook_moves' do
+        set_piece('white', Rook, 'd2')
+        d2 = cell_at('d2')
+        expect(move_manager).to receive(:valid_rook_moves).once
+        move_manager.valid_moves_for(d2)
+      end
+    end
+
+    context 'when piece on space is a knight' do
+      it 'runs valid_knight_moves' do
+        set_piece('white', Knight, 'd2')
+        d2 = cell_at('d2')
+        expect(move_manager).to receive(:valid_knight_moves).once
+        move_manager.valid_moves_for(d2)
+      end
+    end
+
+    context 'when piece on space is a bishop' do
+      it 'runs valid_bishop_moves' do
+        set_piece('white', Bishop, 'd2')
+        d2 = cell_at('d2')
+        expect(move_manager).to receive(:valid_bishop_moves).once
+        move_manager.valid_moves_for(d2)
+      end
+    end
+
+    context 'when piece on space is a pawn' do
+      it 'runs valid_pawn_moves' do
+        set_piece('white', Pawn, 'd2')
+        d2 = cell_at('d2')
+        expect(move_manager).to receive(:valid_pawn_moves).once
+        move_manager.valid_moves_for(d2)
+      end
+    end
+  end
+
+  describe '#show_valid_moves' do
+    let(:game) { Game.new }
+    subject(:move_manager) { described_class.new(game, game.board) }
+    let(:d4) { game.board.board[4][3] }
+    let(:d5) { game.board.board[3][3] }
+    before do
+      set_piece('white', King, 'd4')
+    end
+
+    context 'when King is on d4' do
+      it 'returns red circle on empty space d5' do
+        move_manager.show_valid_moves(d4)
+        expect(d5.piece).to be_a RedCircle
+      end
+    end
+
+    context 'when King is on d4 and enemy pawn is on d5' do
+      it 'makes the background red', focus: true do
+        set_piece('black', Pawn, 'd5')
+        move_manager.show_valid_moves(d4)
+        pawn = d5.piece
+        expect(d5.content).to eq(" #{pawn} ".colorize(:red))
+      end
+    end
+  end
+
+  describe '#valid_moves_empty?' do
+    let(:game) { Game.new }
+    subject(:move_manager) { described_class.new(game, game.board) }
+    let(:a1) { game.board.board[7][0] }
+    before do
+      set_piece('white', Queen, 'a1')
+    end
+
+    context 'when the queen has no spaces to move' do
+      it 'returns true' do
+        set_piece('white', Pawn, 'a2')
+        set_piece('white', Pawn, 'b2')
+        set_piece('white', Pawn, 'b1')
+        expect(move_manager.valid_moves_empty?(a1)).to eq(true)
+      end
+    end
+
+    context 'when the queen has at least one space to move' do
+      it 'returns false' do
+        valid_moves = move_manager.valid_moves_for(a1)
+        expect(move_manager.valid_moves_empty?(a1)).to eq(false)
+      end
+    end
+  end
+
   describe '#valid_king_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game) }
+    subject(:move_manager) { described_class.new(game, game.board) }
     let(:d3) { game.board.board[5][3] }
     before do
       set_piece('white', King, 'd3')
@@ -41,7 +155,7 @@ describe MoveManager do
 
   describe '#valid_rook_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game) }
+    subject(:move_manager) { described_class.new(game, game.board) }
     let(:d4) { game.board.board[4][3] }
     before do
       set_piece('white', Rook, 'd4')
@@ -68,7 +182,7 @@ describe MoveManager do
 
   describe '#valid_knight_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game) }
+    subject(:move_manager) { described_class.new(game, game.board) }
     let(:d2) { game.board.board[6][3] }
     before do
       set_piece('white', Knight, 'd2')
@@ -96,7 +210,7 @@ describe MoveManager do
 
   describe '#valid_bishop_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game) }
+    subject(:move_manager) { described_class.new(game, game.board) }
     let(:d4) { game.board.board[4][3] }
     before do
       set_piece('white', Bishop, 'd4')
@@ -123,7 +237,7 @@ describe MoveManager do
 
   describe '#valid_queen_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game) }
+    subject(:move_manager) { described_class.new(game, game.board) }
     let(:d4) { game.board.board[4][3] }
     before do
       set_piece('white', Queen, 'd4')
@@ -161,7 +275,7 @@ describe MoveManager do
 
   describe '#valid_pawn_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game) }
+    subject(:move_manager) { described_class.new(game, game.board) }
     let(:d2) { game.board.board[6][3] }
     let(:d7) { game.board.board[1][3] }
     before do
@@ -196,7 +310,7 @@ describe MoveManager do
 
     context 'when a white pawn is on h3 with obstructions' do
       let(:h3) { game.board.board[5][7] }
-      it 'returns valid moves', focus: true do
+      it 'returns valid moves' do
         set_piece('white', Rook, 'h4')
         valid_moves = []
         expect(move_manager.valid_pawn_moves(h3)).to eq(valid_moves)
@@ -217,7 +331,8 @@ describe MoveManager do
     end
 
     context 'when a black pawn is on d7 with two enemies diagonally' do
-      xit 'returns all 4 possible spaces' do
+      it 'returns all 4 possible spaces' do
+        game.instance_variable_set(:@turn, 2)
         set_piece('white', Pawn, 'c6')
         set_piece('white', Pawn, 'e6')
         valid_moves = ['d6','d5', 'c6','e6']
@@ -226,7 +341,8 @@ describe MoveManager do
     end
 
     context 'when a black pawn is on d7 with a few obstructions' do
-      xit 'returns valid moves' do
+      it 'returns valid moves' do
+        game.instance_variable_set(:@turn, 2)
         set_piece('white', Pawn, 'c6')
         set_piece('black', Pawn, 'd6')
         valid_moves = ['c6']
@@ -234,7 +350,9 @@ describe MoveManager do
       end
 
       let(:a6) { game.board.board[2][0]}
-      xit 'returns valid moves' do
+      it 'returns valid moves' do
+        game.instance_variable_set(:@turn, 2)
+        set_piece('black', Pawn, 'a6')
         set_piece('white', Pawn, 'b5')
         valid_moves = ['a5','b5']
         expect(move_manager.valid_pawn_moves(a6)).to eq(valid_moves)
@@ -244,7 +362,7 @@ describe MoveManager do
 
   describe '#valid_moves_in_direction' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game) }
+    subject(:move_manager) { described_class.new(game, game.board) }
     let(:d5) { game.board.board[3][3] }
     before do
       set_piece('white', Rook, 'd5')
@@ -281,8 +399,12 @@ def set_piece(color, piece_type, coordinate)
   game.board.place_piece(piece, coordinate)
 end
 
+def cell_at(coordinate)
+  game.cell_at(coordinate)
+end
+
 def strings_to_cells(strings)
   cells = []
-  strings.each { |coordinate| cells << game.board.space_at(coordinate)}
+  strings.each { |coordinate| cells << game.board.cell_at(coordinate)}
   cells
 end

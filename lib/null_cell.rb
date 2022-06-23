@@ -9,7 +9,7 @@ class NullCell
   def initialize
   end
 
-  def clear_piece
+  def clear_piece_and_content
   end
   
   def array_to_chess_coord

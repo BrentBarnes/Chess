@@ -3,10 +3,45 @@ require_relative 'main'
 
 class MoveManager
   attr_reader :game
+  attr_accessor :board
 
-  def initialize(game)
+  def initialize(game, board)
     @game = game
-    # @board = board
+    @board = board
+  end
+
+  def valid_moves_for(cell_object)
+    piece = cell_object.piece
+    case piece
+    when King
+      valid_king_moves(cell_object)
+    when Queen
+      valid_queen_moves(cell_object)
+    when Rook
+      valid_rook_moves(cell_object)
+    when Knight
+      valid_knight_moves(cell_object)
+    when Bishop
+      valid_bishop_moves(cell_object)
+    when Pawn
+      valid_pawn_moves(cell_object)
+    end
+  end
+
+  def show_valid_moves(cell_object)
+    moves_array = valid_moves_for(cell_object)
+
+    moves_array.each do |move|
+      cell = board.cell_at(move)
+      piece = cell.piece
+      board.place_piece(RedCircle.new('red'), move) if cell.empty?
+      # binding.pry
+      cell.content.colorize(background: :red) if cell.occupied?
+    end
+  end
+
+  def valid_moves_empty?(cell_object)
+    valid_moves_for(cell_object).empty?
   end
 
   def all_directions
@@ -60,21 +95,21 @@ class MoveManager
   end
 
   def valid_pawn_moves(cell_object)
-    valid_moves = []
 
     directions = cell_object.pawn_cells
-    binding.pry
-    conditions = [directions[0].occupied?,
-                  !cell_object.pawn_home_row? || directions[0].occupied? || directions[1].occupied?,
-                  directions[2].enemy_team_on_space?,
-                  directions[3].enemy_team_on_space?]
 
-    valid_moves << directions[0].name unless conditions[0]
-    valid_moves << directions[1].name unless conditions[1]
-    valid_moves << directions[2].name if conditions[2]
-    valid_moves << directions[3].name if conditions[3]
-
-    valid_moves
+    directions.filter_map do |direction|
+      case direction
+      when cell_object.up
+        direction.name unless direction.occupied?
+      when cell_object.up_2
+        direction.name unless !cell_object.pawn_home_row? || cell_object.up.occupied? || cell_object.up_2.occupied?
+      when cell_object.up.left
+        direction.name if direction.enemy_team_on_space?
+      when cell_object.up.right
+        direction.name if direction.enemy_team_on_space?
+      end
+    end
   end
 
   def valid_moves_in_direction(cell_object, direction)
