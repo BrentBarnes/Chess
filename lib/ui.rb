@@ -22,6 +22,8 @@ class UI
     puts "Enter the coordinates of any legal move or enemy piece you'd like to capture."
     puts
     puts "To begin press 1 followed by Enter."
+    puts
+    puts "Or type 'load' to load your previously saved game."
   end
 
   def step_1_text
@@ -36,6 +38,7 @@ class UI
       puts "#{game.active_team}'s turn!"
       puts
       puts "Enter the coordinates of the piece you want to move."
+      save_and_quit_text
     end
   end
 
@@ -46,6 +49,12 @@ class UI
     puts
     puts "Enter the coordinates of a legal move or a piece you'd like to capture."
     puts "or type 'unselect' to unselect your chosen piece and select a new piece to move."
+    save_and_quit_text
+  end
+
+  def save_and_quit_text
+    puts
+    puts "Or type 'save' to save your game and quit."
   end
 
   def game_over_text
@@ -91,6 +100,7 @@ class UI
       puts 'Your King is in imminent danger!!!'
       puts "#{game.active_team} team, select your King and move it to safety!"
     end
+    save_and_quit_text
   end
 
   def invalid_to_selection_responses(from_cell, to_cell, input)
@@ -115,6 +125,7 @@ class UI
       puts "#{game.active_team} team, select a move for this piece that will keep your King safe"
       puts "or type 'unselect' to unselect your chosen piece and select a new piece to move."
     end
+    save_and_quit_text
   end
 
   def move_piece
@@ -124,8 +135,10 @@ class UI
     loop do
       step_1_text
       from_cell = get_player_first_input
+      move_manager.show_valid_moves(from_cell)
       step_2_text
       to_cell = get_player_second_input(from_cell)
+      move_manager.remove_valid_moves(from_cell)
       next if to_cell == 'unselected'
       break
     end
@@ -156,6 +169,7 @@ class UI
   def get_player_first_input
     loop do
       input = gets.chomp.downcase
+      save_game_option(input)
       from_cell = board.cell_at(input)
       invalid_from_selection_responses(from_cell, input)
 
@@ -173,6 +187,7 @@ class UI
 
     loop do
       input = gets.chomp.downcase
+      save_game_option(input)
       to_cell = board.cell_at(input)
       invalid_to_selection_responses(from_cell, to_cell, input)
 
@@ -188,5 +203,12 @@ class UI
   def clear_and_print_board
     system('clear')
     board.print_board
+  end
+
+  def save_game_option(input)
+    if input == 'save'
+      game.save_game
+      exit
+    end
   end
 end

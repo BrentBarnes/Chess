@@ -10,13 +10,28 @@ class Cell
     @board = board
     @row = row
     @column = column
-    @content = "   "
+    @content = color_content("   ")
     @name = array_to_chess_coord
     @piece = EmptySpace.new
   end
 
+  def color_content(string)
+    if row % 2 == 0 && column % 2 == 0 ||
+      row % 2 == 1 && column % 2 == 1
+      string.colorize(background: :blue)
+    else
+      string.colorize(background: :black)
+    end
+  end
+
+def update_piece_and_content(piece_object)
+    @piece = piece_object
+    @content = " #{piece_object.to_s} "
+    @content = color_content(content)
+  end
+
   def clear_piece_and_content
-    @content = "   "
+    @content = color_content("   ")
     @piece = EmptySpace.new
   end
 
@@ -31,11 +46,11 @@ class Cell
   end
   
   def empty?
-    content == "   " ? true : false
+    piece.is_a?(EmptySpace)
   end
 
   def occupied?
-    if content[1] == ' ' || piece.is_a?(RedCircle)
+    if empty? || piece.is_a?(RedCircle)
      false
     else
       true
@@ -60,11 +75,6 @@ class Cell
 
   def enemy_team_on_space?
     piece.enemy_team?(game.player1_turn?)
-  end
-
-  def update_piece_and_content(piece_object)
-    @piece = piece_object
-    @content = " #{piece_object.to_s} "
   end
 
   def space_up

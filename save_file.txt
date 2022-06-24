@@ -1,0 +1,1 @@
+{"graveyard":"#<Graveyard:0x000055c4d1252510>","board":"#<Board:0x000055c4d1252308>","move_manager":"#<MoveManager:0x000055c4d1537e60>","check_manager":"#<CheckManager:0x000055c4d1537dc0>","ui":"#<UI:0x000055c4d1537cf8>","turn":3}

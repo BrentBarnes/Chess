@@ -3,13 +3,14 @@ require_relative 'main'
 
 class Board
 
-  attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard
+  attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard, :active_board
   attr_reader :game, :graveyard, :move_manager
 
   def initialize(game, graveyard, move_manager)
     @game = game
     @board = create_board
     @graveyard = graveyard
+    @active_board = print_board
   end
 
   def set_up_board
@@ -38,9 +39,9 @@ class Board
       row.each_with_index do |space, column_index|
         if row_index % 2 == 0 && column_index % 2 == 0 ||
            row_index % 2 == 1 && column_index % 2 == 1
-           rows << space.content.colorize(background: :blue)
+           rows << space.content
         else
-          rows << space.content.colorize(background: :black)
+          rows << space.content
         end
       end
       rows << " #{row_number.to_s}\n"
@@ -97,9 +98,9 @@ class Board
     board.flatten.find do |space| 
       if game.player1_turn? && friendly_or_enemy == 'enemy' ||
          !game.player1_turn? && friendly_or_enemy == 'friendly'
-        space.content == ' ♔ '
+        space.content.uncolorize == ' ♔ '
       else
-        space.content == ' ♚ '
+        space.content.uncolorize == ' ♚ '
       end
     end
   end

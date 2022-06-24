@@ -35,8 +35,22 @@ class MoveManager
       cell = board.cell_at(move)
       piece = cell.piece
       board.place_piece(RedCircle.new('red'), move) if cell.empty?
-      # binding.pry
-      cell.content.colorize(background: :red) if cell.occupied?
+      if cell.occupied?
+        cell.content = cell.content.colorize(background: :red)
+      end
+    end
+  end
+
+  def remove_valid_moves(cell_object)
+    moves_array = valid_moves_for(cell_object)
+
+    moves_array.each do |move|
+      cell = board.cell_at(move)
+      piece = cell.piece
+      cell.clear_piece_and_content if piece.is_a?(RedCircle)
+      if cell.occupied?
+        cell.content = cell.color_content(" #{piece} ")
+      end
     end
   end
 

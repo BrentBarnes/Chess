@@ -83,11 +83,11 @@ describe MoveManager do
     end
 
     context 'when King is on d4 and enemy pawn is on d5' do
-      it 'makes the background red', focus: true do
+      it 'makes the background red' do
         set_piece('black', Pawn, 'd5')
         move_manager.show_valid_moves(d4)
         pawn = d5.piece
-        expect(d5.content).to eq(" #{pawn} ".colorize(:red))
+        expect(d5.content).to eq(" #{pawn} ".colorize(background: :red))
       end
     end
   end

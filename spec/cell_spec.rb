@@ -5,7 +5,8 @@ describe Cell do
 
   describe '#empty?' do
     let(:game) { Game.new }
-    subject(:cell) { described_class.new(6, 3, game, Board.new(game, game.move_manager)) }
+    let(:board) { Board.new(game, game.graveyard, game.move_manager) }
+    subject(:cell) { described_class.new(6, 3, game, board) }
     context 'when a space is empty' do
       it 'returns true' do
         expect(cell.empty?).to be true
@@ -14,7 +15,7 @@ describe Cell do
     
     context 'when a space is not empty' do
       it 'returns false' do
-        cell.content = 'not empty'
+        cell.piece = Rook.new('white')
         expect(cell.empty?).to be false
       end
     end
@@ -22,15 +23,16 @@ describe Cell do
 
   describe '#in_bounds?' do
     let(:game) { Game.new }
+    let(:board) { Board.new(game, game.graveyard, game.move_manager) }
     context 'when coordinate is in bounds' do
-      subject(:cell) { described_class.new(5,5, game, Board.new(game, game.move_manager)) }
+      subject(:cell) { described_class.new(5,5, game, board) }
       it 'returns true' do
         expect(cell.in_bounds?).to eq(true)
       end
     end
 
     context 'when coordinate is not bounds' do
-      subject(:cell) { described_class.new(20,13, game, Board.new(game, game.move_manager)) }
+      subject(:cell) { described_class.new(20,13, game, board) }
       it 'returns false' do
         expect(cell.in_bounds?).to eq(false)
       end
@@ -39,15 +41,16 @@ describe Cell do
 
   describe '#out_of_bounds?' do
     let(:game) { Game.new }
+    let(:board) { Board.new(game, game.graveyard, game.move_manager) }
     context 'when coordinate is not bounds' do
-      subject(:cell) { described_class.new(20,13, game, Board.new(game, game.move_manager)) }
+      subject(:cell) { described_class.new(20,13, game, board) }
       it 'returns false' do
         expect(cell.out_of_bounds?).to eq(true)
       end
     end
 
     context 'when coordinate is in bounds' do
-      subject(:cell) { described_class.new(5,5, game, Board.new(game, game.move_manager)) }
+      subject(:cell) { described_class.new(5,5, game, board) }
       it 'returns true' do
         expect(cell.out_of_bounds?).to eq(false)
       end
@@ -56,7 +59,9 @@ describe Cell do
 
   describe '#clear_piece_and_content' do
     let(:game) { Game.new }
-    subject(:cell) { described_class.new(6,3, game, Board.new(game, game.move_manager)) }
+    let(:board) { Board.new(game, game.graveyard, game.move_manager) }
+    subject(:cell) { described_class.new(6,3, game, board) }
+
     context 'when a space with a piece is selected' do
       it 'clears the piece from that space' do
         cell.content = 'occupied'
@@ -69,7 +74,8 @@ describe Cell do
 
   describe '#same_team_on_space?' do
     let(:game) { Game.new }
-    subject(:cell) { described_class.new(6,3, game, Board.new(game, game.move_manager)) }
+        let(:board) { Board.new(game, game.graveyard, game.move_manager) }
+    subject(:cell) { described_class.new(6,3, game, board) }
     
     context 'when the same team piece is on the space' do
       it 'returns true' do
@@ -88,7 +94,8 @@ describe Cell do
 
   describe '#enemy_team_on_space?' do
     let(:game) { Game.new }
-    subject(:cell) { described_class.new(6,3, game, Board.new(game, game.move_manager)) }
+    let(:board) { Board.new(game, game.graveyard, game.move_manager) }
+    subject(:cell) { described_class.new(6,3, game, board) }
     
     context 'when the enemy team piece is on the space' do
       it 'returns true' do
@@ -107,7 +114,7 @@ describe Cell do
 
   describe '#knight_cells' do
     let(:game) { Game.new }
-    let(:board) { Board.new(game, game.move_manager) }
+    let(:board) { Board.new(game, game.graveyard, game.move_manager) }
     context 'when the piece is a Knight on space d3' do
       subject(:cell) { described_class.new(5,3, game, board) }
       it 'returns all potential cells that a knight could move' do
@@ -131,7 +138,7 @@ describe Cell do
   
   describe '#pawn_cells' do
     let(:game) { Game.new }
-    let(:board) { Board.new(game, game.move_manager) }
+    let(:board) { Board.new(game, game.graveyard, game.move_manager) }
     context 'when the piece is a Pawn on space d2' do
       subject(:d2) { described_class.new(6, 3, game, board) }
       it 'returns all 4 possible moves' do

@@ -6,13 +6,18 @@ class Game
   attr_accessor :turn
   attr_reader :board, :move_manager, :ui, :graveyard, :check_manager
 
-  def initialize
-    @graveyard = Graveyard.new(self)
-    @board = Board.new(self, graveyard, move_manager)
-    @move_manager = MoveManager.new(self, board)
-    @check_manager = CheckManager.new(self, board, move_manager)
-    @ui = UI.new(self, board, move_manager, check_manager)
-    @turn = 1
+  def initialize(graveyard = Graveyard.new(self),
+                board = Board.new(self, graveyard, move_manager),
+                move_manager = MoveManager.new(self, board),
+                check_manager = CheckManager.new(self, board, move_manager),
+                ui = UI.new(self, board, move_manager, check_manager),
+                turn = 1) 
+    @graveyard = graveyard
+    @board = board
+    @move_manager = move_manager
+    @check_manager = check_manager
+    @ui = ui
+    @turn = turn
   end
 
   def play
@@ -26,12 +31,16 @@ class Game
   end
 
   def set_up_game
-    board.set_up_board
     ui.introduction
     loop do
       response = gets.chomp
+      if response == 'load'
+        load_game
+        break
+      end
       break if response.to_i == 1
     end
+    board.set_up_board
   end
 
   def execute_turn
@@ -39,6 +48,45 @@ class Game
     board.print_board
     ui.move_piece
     @turn += 1
+  end
+
+  def to_json
+    JSON.dump ({
+      :graveyard => @graveyard,
+      :board => @board,
+      :move_manager => @move_manager,
+      :check_manager => @check_manager,
+      :ui => @ui,
+      :turn => @turn
+    })
+  end
+
+  def self.from_json(string)
+    data = JSON.load string
+    self.new(data['graveyard'], data['board'], data['move_manager'],
+      data['check_manager'], data['ui'], data['turn'] )
+
+    #Old way I tried it  
+    # data
+    # @graveyard = data["graveyard"]
+    # @board = data["board"]
+    # @move_manager = data["move_manager"]
+    # @check_manager = data["check_manager"]
+    # @ui = data["ui"]
+    # @turn = data["turn"]
+  end
+
+  def save_game
+    save_file = File.open("save_file.txt", "w")
+    save_file.write to_json
+    save_file.close
+  end
+
+  def load_game
+    file = File.open("save_file.txt", "r")
+    contents = file.read
+
+    Game.from_json(contents)
   end
 
   def cell_at(coordinate)

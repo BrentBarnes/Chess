@@ -1,6 +1,7 @@
 
 require 'colorize'
 require 'pry'
+require 'json'
 require_relative 'main'
 require_relative 'game'
 require_relative 'board'
