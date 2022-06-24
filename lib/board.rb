@@ -3,14 +3,14 @@ require_relative 'main'
 
 class Board
 
-  attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard, :active_board
+  attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard, :fen_board
   attr_reader :game, :graveyard, :move_manager
 
   def initialize(game, graveyard, move_manager)
     @game = game
     @board = create_board
+    @fen_board = nil
     @graveyard = graveyard
-    @active_board = print_board
   end
 
   def set_up_board
@@ -121,5 +121,21 @@ class Board
       cells = board.flatten.filter_map { |cell| cell if cell.enemy_team_on_space? }
     end
     cells.sort_by(&:name)
+  end
+
+  def board_to_fen
+    board.flatten.map do |cell|
+      cell.cell_to_fen
+    end
+  end
+
+  def self.board_from_fen
+    # create_board
+
+    i = 0
+    board.flatten.each do |cell|
+      cell.cell_from_fen(self[i])
+      i += 1
+    end
   end
 end

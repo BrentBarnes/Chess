@@ -37,10 +37,11 @@ class Game
       if response == 'load'
         load_game
         break
+      elsif response.to_i == 1
+        board.set_up_board
+        break
       end
-      break if response.to_i == 1
     end
-    board.set_up_board
   end
 
   def execute_turn
@@ -53,7 +54,7 @@ class Game
   def to_json
     JSON.dump ({
       :graveyard => @graveyard,
-      :board => @board,
+      :board => @board.board_to_fen,
       :move_manager => @move_manager,
       :check_manager => @check_manager,
       :ui => @ui,
@@ -63,17 +64,8 @@ class Game
 
   def self.from_json(string)
     data = JSON.load string
-    self.new(data['graveyard'], data['board'], data['move_manager'],
+    self.new(data['graveyard'], data['board'].board_from_fen, data['move_manager'],
       data['check_manager'], data['ui'], data['turn'] )
-
-    #Old way I tried it  
-    # data
-    # @graveyard = data["graveyard"]
-    # @board = data["board"]
-    # @move_manager = data["move_manager"]
-    # @check_manager = data["check_manager"]
-    # @ui = data["ui"]
-    # @turn = data["turn"]
   end
 
   def save_game

@@ -67,7 +67,64 @@ describe Cell do
         cell.content = 'occupied'
         cell.clear_piece_and_content
 
-        expect(cell.content).to eq('   ')
+        expect(cell.content).to eq(cell.color_content('   '))
+      end
+    end
+  end
+
+  describe '#cell_to_fen' do
+    let(:game) { Game.new }
+    let(:board) { Board.new(game, game.graveyard, game.move_manager) }
+    subject(:cell) { described_class.new(0,0, game, board) }
+
+    context 'when cell is empty' do
+      it 'returns string e' do
+        expect(cell.cell_to_fen).to eq('e')
+      end
+    end
+
+    context 'when cell has white pawn' do
+      it 'returns string P' do
+        set_piece('white', Pawn, 'a8')
+        cell.instance_variable_set(:@piece, Pawn.new('white'))
+        expect(cell.cell_to_fen).to eq('P')
+      end
+    end
+
+    context 'when cell has white pawn' do
+      it 'returns string p' do
+        set_piece('black', Pawn, 'a8')
+        cell.instance_variable_set(:@piece, Pawn.new('black'))
+        expect(cell.cell_to_fen).to eq('p')
+      end
+    end
+
+    context 'when cell has black queen' do
+      it 'returns string q' do
+        set_piece('black', Queen, 'a8')
+        cell.instance_variable_set(:@piece, Queen.new('black'))
+        expect(cell.cell_to_fen).to eq('q')
+      end
+    end
+  end
+
+  describe '#cell_from_fen' do
+    let(:game) { Game.new }
+    let(:board) { Board.new(game, game.graveyard, game.move_manager) }
+    subject(:cell) { described_class.new(0,0, game, board) }
+
+    context 'when fen letter is K' do
+      it 'updates the piece of the cell for a king' do
+        cell.cell_from_fen('K')
+        piece_object = cell.instance_variable_get(:@piece)
+        expect(piece_object).to be_a King
+      end
+
+      it 'gets the correct color (white) for the piece' do
+        cell.cell_from_fen('K')
+        piece_object = cell.instance_variable_get(:@piece)
+        color = piece_object.color
+        expect(color).to eq('white')
       end
     end
   end

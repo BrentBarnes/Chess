@@ -24,7 +24,7 @@ class Cell
     end
   end
 
-def update_piece_and_content(piece_object)
+  def update_piece_and_content(piece_object)
     @piece = piece_object
     @content = " #{piece_object.to_s} "
     @content = color_content(content)
@@ -39,6 +39,62 @@ def update_piece_and_content(piece_object)
     game.graveyard.send_piece_to_graveyard(piece)
   end
   
+  def cell_to_fen
+    case piece
+    when King
+      return 'K' if piece.color == 'white'
+      return 'k' if piece.color == 'black'
+    when Queen
+      return 'Q' if piece.color == 'white'
+      return 'q' if piece.color == 'black'
+    when Rook
+      return 'R' if piece.color == 'white'
+      return 'r' if piece.color == 'black'
+    when Knight
+      return 'N' if piece.color == 'white'
+      return 'n' if piece.color == 'black'
+    when Bishop
+      return 'B' if piece.color == 'white'
+      return 'b' if piece.color == 'black'
+    when Pawn
+      return 'P' if piece.color == 'white'
+      return 'p' if piece.color == 'black'
+    when EmptySpace
+      'e'
+    end
+  end
+
+  def cell_from_fen(fen_letter)
+    case fen_letter
+    when 'K'
+      update_piece_and_content(King.new('white'))
+    when 'k'
+      update_piece_and_content(King.new('black'))
+    when 'Q'
+      update_piece_and_content(Queen.new('white'))
+    when 'q'
+      update_piece_and_content(Queen.new('black'))
+    when 'R'
+      update_piece_and_content(Rook.new('white'))
+    when 'r'
+      update_piece_and_content(Rook.new('black'))
+    when 'N'
+      update_piece_and_content(Knight.new('white'))
+    when 'n'
+      update_piece_and_content(Knight.new('black'))
+    when 'B'
+      update_piece_and_content(Bishop.new('white'))
+    when 'b'
+      update_piece_and_content(Bishop.new('black'))
+    when 'P'
+      update_piece_and_content(Pawn.new('white'))
+    when 'p'
+      update_piece_and_content(Pawn.new('black'))
+    when 'e'
+      update_piece_and_content(EmptySpace.new('none'))
+    end
+  end
+
   def array_to_chess_coord
     chess_row = (1 + (7 - row)).to_s
     chess_column = (column + 97).chr
