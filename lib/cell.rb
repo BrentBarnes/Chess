@@ -60,39 +60,12 @@ class Cell
       return 'P' if piece.color == 'white'
       return 'p' if piece.color == 'black'
     when EmptySpace
-      'e'
+      'empty'
     end
   end
 
-  def cell_from_fen(fen_letter)
-    case fen_letter
-    when 'K'
-      update_piece_and_content(King.new('white'))
-    when 'k'
-      update_piece_and_content(King.new('black'))
-    when 'Q'
-      update_piece_and_content(Queen.new('white'))
-    when 'q'
-      update_piece_and_content(Queen.new('black'))
-    when 'R'
-      update_piece_and_content(Rook.new('white'))
-    when 'r'
-      update_piece_and_content(Rook.new('black'))
-    when 'N'
-      update_piece_and_content(Knight.new('white'))
-    when 'n'
-      update_piece_and_content(Knight.new('black'))
-    when 'B'
-      update_piece_and_content(Bishop.new('white'))
-    when 'b'
-      update_piece_and_content(Bishop.new('black'))
-    when 'P'
-      update_piece_and_content(Pawn.new('white'))
-    when 'p'
-      update_piece_and_content(Pawn.new('black'))
-    when 'e'
-      update_piece_and_content(EmptySpace.new('none'))
-    end
+  def cell_from_fen(piece_object)
+    update_piece_and_content(piece_object)
   end
 
   def array_to_chess_coord

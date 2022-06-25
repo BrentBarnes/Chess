@@ -3,28 +3,72 @@ require_relative 'main'
 
 class Board
 
-  attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard, :fen_board
+  attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard, :fen_string
   attr_reader :game, :graveyard, :move_manager
 
-  def initialize(game, graveyard, move_manager)
+  def initialize(game, graveyard, move_manager, fen_string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
     @game = game
+    @fen_string = fen_string
     @board = create_board
-    @fen_board = nil
     @graveyard = graveyard
   end
 
   def set_up_board
-    create_board
-    set_pieces_on_board
+    # create_board
+    # set_pieces_on_board
   end
 
   def create_board
+    i = 0
     array = Array.new(8) {Array.new(8)}
     array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
         array[row_index][column_index] = Cell.new(row_index, column_index, game, self)
+        # binding.pry
+        array[row_index][column_index].cell_from_fen(fen_to_pieces[i])
+        i += 1
       end
     end
+  end
+
+  def fen_to_pieces
+    piece_array = []
+
+    fen_string.each_char do |fen|
+      case
+      when fen == 'K'
+        piece_array << King.new('white')
+      when fen == 'k'
+        piece_array << King.new('black')
+      when fen == 'Q'
+        piece_array << Queen.new('white')
+      when fen == 'q'
+        piece_array << Queen.new('black')
+      when fen == 'R'
+        piece_array << Rook.new('white')
+      when fen == 'r'
+        piece_array << Rook.new('black')
+      when fen == 'N'
+        piece_array << Knight.new('white')
+      when fen == 'n'
+        piece_array << Knight.new('black')
+      when fen == 'B'
+        piece_array << Bishop.new('white')
+      when fen == 'b'
+        piece_array << Bishop.new('black')
+      when fen == 'P'
+        piece_array << Pawn.new('white')
+      when fen == 'p'
+        piece_array << Pawn.new('black')
+      when fen == '/'
+        
+      when fen.between?('1', '8')
+        fen.to_i.times do
+          piece_array << EmptySpace.new('none')
+        end
+      end
+    end
+    piece_array
   end
 
   def print_board
@@ -124,18 +168,36 @@ class Board
   end
 
   def board_to_fen
-    board.flatten.map do |cell|
-      cell.cell_to_fen
+    array = []
+    counter = 0
+
+    board.each_with_index do |row, row_index|
+      row.each_with_index do |cell, column_index|
+        fen = cell.cell_to_fen
+
+        if fen == 'empty'
+          counter += 1
+        end
+        if fen != 'empty' && counter > 0
+          array << counter.to_s
+          counter = 0
+        end
+        if fen != 'empty'
+          array << cell.cell_to_fen
+        end
+      end
+      if counter > 0
+        array << counter
+        counter = 0
+      end
+      array << '/'
     end
+    # @fen_string = array.join.chop
+    # game.board_fen = array.join.chop
+    array.join.chop
   end
 
-  def self.board_from_fen
-    # create_board
-
-    i = 0
-    board.flatten.each do |cell|
-      cell.cell_from_fen(self[i])
-      i += 1
-    end
-  end
+  # def self.board_from_fen(fen_string)
+  #   create_board
+  # end
 end

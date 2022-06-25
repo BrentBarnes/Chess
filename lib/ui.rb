@@ -207,7 +207,7 @@ class UI
 
   def save_game_option(input)
     if input == 'save'
-      board.fen_board = board.board_to_fen
+      board.fen_string = board.board_to_fen
       game.save_game
       exit
     end

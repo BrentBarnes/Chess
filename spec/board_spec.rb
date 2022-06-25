@@ -246,16 +246,17 @@ describe Board do
       board.place_piece(King.new('white'), 'e1')
     end
 
-    context 'when board has 6 pieces on it' do
+    context 'when board has 6 pieces on it', focus: true do
       it 'returns a representation of the board in fen notation' do
-        fen_board = ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                    'r', 'e', 'p', 'b', 'e', 'e', 'e', 'e',
-                    'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                    'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                    'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                    'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                    'e', 'Q', 'e', 'N', 'e', 'e', 'e', 'e',
-                    'e', 'e', 'e', 'e', 'K', 'e', 'e', 'e']
+        # fen_board = [['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
+        #             ['r', 'e', 'p', 'b', 'e', 'e', 'e', 'e'],
+        #             ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
+        #             ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
+        #             ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
+        #             ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
+        #             ['e', 'Q', 'e', 'N', 'e', 'e', 'e', 'e'],
+        #             ['e', 'e', 'e', 'e', 'K', 'e', 'e', 'e']]
+        fen_board = "8/r1pb4/8/8/8/8/1Q1N4/4K3"
         
         expect(board.board_to_fen).to eq(fen_board)
       end
