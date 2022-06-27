@@ -3,10 +3,10 @@ class Graveyard
 
   attr_accessor :white_graveyard, :black_graveyard
 
-  def initialize(game)
+  def initialize(game, white_graveyard = [], black_graveyard = [])
     @game = game
-    @white_graveyard = []
-    @black_graveyard = []
+    @white_graveyard = white_graveyard
+    @black_graveyard = black_graveyard
   end
 
   def send_piece_to_graveyard(piece)
@@ -23,5 +23,12 @@ class Graveyard
     else
       puts "                              #{black_graveyard.join(' 0')}"
     end
+  end
+
+  def save_graveyard
+    grave_array = []
+    grave_array << white_graveyard
+    grave_array << black_graveyard
+    grave_array
   end
 end

@@ -72,7 +72,6 @@ class MoveManager
     potential = surrounding_cells(cell_object)
 
     potential.filter_map do |cell|
-      # binding.pry
       cell.name unless cell.same_team_on_space?
     end
   end

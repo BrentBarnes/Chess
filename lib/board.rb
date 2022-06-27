@@ -24,7 +24,6 @@ class Board
     array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
         array[row_index][column_index] = Cell.new(row_index, column_index, game, self)
-        # binding.pry
         array[row_index][column_index].cell_from_fen(fen_to_pieces[i])
         i += 1
       end

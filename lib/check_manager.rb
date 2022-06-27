@@ -1,7 +1,8 @@
 
 class CheckManager
 
-  attr_reader :game, :board, :move_manager
+  attr_reader :game, :move_manager
+  attr_accessor :board
 
   def initialize(game, board, move_manager)
     @game = game

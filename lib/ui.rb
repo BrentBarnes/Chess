@@ -1,6 +1,7 @@
 
 class UI
-  attr_reader :game, :board, :move_manager, :check_manager
+  attr_reader :game, :move_manager, :check_manager
+  attr_accessor :board
 
   def initialize(game, board, move_manager, check_manager)
     @game = game
@@ -21,7 +22,10 @@ class UI
     puts "Step Two:"
     puts "Enter the coordinates of any legal move or enemy piece you'd like to capture."
     puts
-    puts "To begin press 1 followed by Enter."
+    puts "Game Modes:"
+    puts "Select [1] for human vs. human"
+    puts "Select [2] for human vs. computer"
+    puts "Select [3] for computer vs. computer"
     puts
     puts "Or type 'load' to load your previously saved game."
   end
@@ -49,7 +53,6 @@ class UI
     puts
     puts "Enter the coordinates of a legal move or a piece you'd like to capture."
     puts "or type 'unselect' to unselect your chosen piece and select a new piece to move."
-    save_and_quit_text
   end
 
   def save_and_quit_text
@@ -187,7 +190,6 @@ class UI
 
     loop do
       input = gets.chomp.downcase
-      save_game_option(input)
       to_cell = board.cell_at(input)
       invalid_to_selection_responses(from_cell, to_cell, input)
 

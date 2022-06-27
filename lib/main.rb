@@ -24,6 +24,38 @@ require_relative 'piece_subclasses/king'
 require_relative 'piece_subclasses/red_circle'
 require_relative 'piece_subclasses/red_background'
 
-game = Game.new
+def start_game
+  introduction
+  loop do
+    response = gets.chomp
+    if response == 'load'
+      binding.pry
+      old_game = Game.load_game
+      old_game.load_graveyard
+      old_game.board_from_fen
+      old_game.play
+    elsif response.to_i == 1
+      Game.new.play
+      break
+    end
+  end
+end
 
-game.play
+def introduction
+  system('clear')
+  puts "Welcome to Chess!"
+  puts
+  puts "Each turn will be played in two different steps."
+  puts
+  puts "Step One:"
+  puts "Enter the coordinates of the piece you want to move, like 'a1' or 'g7'."
+  puts
+  puts "Step Two:"
+  puts "Enter the coordinates of any legal move or enemy piece you'd like to capture."
+  puts
+  puts "To begin press 1 followed by Enter."
+  puts
+  puts "Or type 'load' to load your previously saved game."
+end
+
+start_game

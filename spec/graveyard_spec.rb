@@ -25,4 +25,19 @@ describe Graveyard do
       end
     end
   end
+
+  describe '#save_graveyard' do
+
+    context 'when the graveyard is saved' do
+      let(:game) { Game.new }
+      subject(:graveyard) { described_class.new(game) }
+
+      it 'returns a nested array of the graveyards' do
+        graveyard.instance_variable_set(:@white_graveyard, ['♟','♟','♟','♟'])
+        graveyard.instance_variable_set(:@black_graveyard, ['♘','♘','♘'])
+        grave_array = [['♟','♟','♟','♟'], ['♘','♘','♘']]
+        expect(graveyard.save_graveyard).to eq(grave_array)
+      end
+    end
+  end
 end

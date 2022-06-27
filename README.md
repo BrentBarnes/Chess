@@ -1,42 +1,81 @@
-J
-the call to #set_up_board is reached whether or not the player chooses to load a game. break won't break out of the method entirely, just out the that loop it's in. Bad news is if you fix this, you'll immediately run into another issue: the state of the objects the board holds a reference to aren't automatically serialized just because you serialize the board instance variable in Game. You'll need to come up with some way to persist this information. There are some domain specific options you can research by looking into "chess notation"
+So, I've been able to load in the board, but now it's the other instance variables that are being loaded in as strings.
 
+Josh said that you don't actually have to save the statee of every instance variable that the game has.
+You only need to save the state of the variables that matter. 
+In my case, 
+1. I need a FEN representation of the board
+2. A representation of the graveyard
+3. The turn variable (which takes care of itself since it's stored in the Game class)
 
-B
-So step 1 (saving): if I were to use FEN for example, I could build a to_fen method in my Cell class so that each cell could translate itself into fen. Then I could iterate through the board, converting each cell to fen, and serialize that?
+With the board, I saved the FEN representation to @board_fen just as the player saves the game.
+(Maybe I should move this saving somewhere else)
+(Maybe I should save this to @board instead of having an extra @board_fen instance variable)
+Then when the player chooses to load the game, this happens:
 
-Step 2 (loading): I will have to load in the array of fen cells, and make a from_fen method that can then iterate through the array of fen cells to convert them back into Cell objects to build the board with? 
+if response == 'load'
+      old_game = Game.load_game
+      old_game.board_from_fen
+      old_game.play
 
-I think I can get myself through converting to a notation type and converting it back, but I don't know if I'll know how to serialize just that information, and then how to access that information and use it to populate the board again upon loading.
-Will I have to build board_to_json and board_from_json methods in the board class or something
+So the new instance of the game is given the variable old_game
+That game instance then builds the board_from_fen
+and the game is able to be played.
 
-
-J
-Basically rather than the template of saving where you have 
-key: @instance_var, you can say key: @object.to_fen 
-or something. and then a from_fen call on the other side
-So what's getting saved is the notation, not the board directly. The board would be capable of converting its state to some notation and then loading its state from some notation
-
-
-B
-okay, so the board converts it to a fen_array or something like that, then I can call something like 
+That is until it gets to graveyard.
+I will need to remove the loading of all instance variables here: 
 
 def to_json
     JSON.dump ({
-      :board =>@board.to_fen
-      #plus more below
+      :graveyard => @graveyard,
+      :board => @board,
+      :move_manager => @move_manager,
+      :check_manager => @check_manager,
+      :ui => @ui,
+      :turn => @turn,
+      :board_fen => @board_fen
     })
   end
 
-
-and then I would load it back in somewhere in here?
-
-def self.from_json(string)
+  def self.from_json(string)
     data = JSON.load string
-    #below doesn't seem right
-    self.new(data['board.from_fen'], #etc..... )
+    self.new(data['graveyard'], data['board'], data['move_manager'],
+      data['check_manager'], data['ui'], data['turn'], data['board_fen'])
   end
 
+  and the only ones I should need are @board (once I get rid of @board_fen), graveyard, and turn.
+  I might have to use keyword arguments like graveyard: :data['graveyard']
 
-J
-  Yep, only probably in the bottom one it'd be like data['board'].from_fen -- fetching the object at the key 'board' and then call the method on it
+  I will do the same process as @board for @graveyard
+  When the game saves, I will update Game's @graveyard instance variable using a method called save_graveyard.
+  That will make a nested array that looks like this:
+  [[white graveyard goes here], [black graveyard goes here]]
+
+  Then when the game loads, I will have a method called load_graveyard that:
+  Sets the @graveyard instance variable to a new instance of Graveyard
+    @graveyard = Graveyard.new(self, graveyard[0], graveyard[1])
+    (Above, graveyard[0] should correspond to [white graveyard goes here], and graveyard[1] = [black graveyard goes here])
+
+I should then be able to call old_game.load_graveyard here:
+if response == 'load'
+      old_game = Game.load_game
+      old_game.load_graveyard
+      old_game.board_from_fen
+      old_game.play
+
+and hopefully all shall be well. I could also create a method that loads the graveyard and the board like:
+
+Game
+def self.load_instance_variable_elements
+  self.load_graveyard
+  self.board_from_fen
+end
+
+and turn it to 
+
+if response == 'load'
+      old_game = Game.load_game
+      old_game.load_instance_variable_elements
+      old_game.play
+
+Hopefully this should work!!
+(unless turn decides to give me grief, but I don't think it will.)
