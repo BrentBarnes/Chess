@@ -1,0 +1,1 @@
+{"graveyard":[[],[]],"board":"rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR","move_manager":"#<MoveManager:0x0000562692d4efe0>","check_manager":"#<CheckManager:0x0000562692d4efb8>","ui":"#<HumanVsHuman:0x0000562692d4ef68>","turn":3,"board_fen":null}

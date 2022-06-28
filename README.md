@@ -1,9 +1,81 @@
-Hi there! I've run into another design flaw with my chess game. I've been building a module called `ValidPieceMoves` that contains all of the functions I'd need to calculate where a piece is allowed to move on the board. I think it's also important to note that I have a class the creates each space on the board as its own object called `Coordinate`. This class is supposed to hold all of the information that a coordinate might need to know. I created Coordinate as a way to remove data clump from other classes, and it's worked great!
+So, I've been able to load in the board, but now it's the other instance variables that are being loaded in as strings.
 
-After building the `ValidPieceMoves` module, I thought I'd just be able to include that module in my `Coordinate` class and be on my jolly way! However, I've run into some unidentified function errors when I try to use functions from `ValidPieceMoves` in my `Coordinate` class. I think this is because my `ValidPieceMoves` module uses functions like `space_at` which lives in my `Game` class. As you can see, I think I've lost control of my classes and modules and they're getting tangled up, and I'm beginning to think that I designed something wrong.
+Josh said that you don't actually have to save the statee of every instance variable that the game has.
+You only need to save the state of the variables that matter. 
+In my case, 
+1. I need a FEN representation of the board
+2. A representation of the graveyard
+3. The turn variable (which takes care of itself since it's stored in the Game class)
 
-I think I could fix the issue by putting all of the functions from `ValidPieceMoves` in my `Coordinate` class. This would further remove data clumping because I wouldn't have to keep selecting the space in every function. However, I don't know if `Coordinate` would still be following the single responsibility principle if I also made it in charge of determining valid spaces? That's originally why I had the idea of keeping the responsibility of determining valid spaces separate in its own module. 
+With the board, I saved the FEN representation to @board_fen just as the player saves the game.
+(Maybe I should move this saving somewhere else)
+(Maybe I should save this to @board instead of having an extra @board_fen instance variable)
+Then when the player chooses to load the game, this happens:
 
-Would it be a violation if I migrated all of the functions from `ValidPieceMoves` into my `Coordinate` class? If it is a violation, I'm not sure what else I could do to remedy this situation?
+if response == 'load'
+      old_game = Game.load_game
+      old_game.board_from_fen
+      old_game.play
 
-Here's my repo: https://github.com/BrentBarnes/Chess
+So the new instance of the game is given the variable old_game
+That game instance then builds the board_from_fen
+and the game is able to be played.
+
+That is until it gets to graveyard.
+I will need to remove the loading of all instance variables here: 
+
+def to_json
+    JSON.dump ({
+      :graveyard => @graveyard,
+      :board => @board,
+      :move_manager => @move_manager,
+      :check_manager => @check_manager,
+      :ui => @ui,
+      :turn => @turn,
+      :board_fen => @board_fen
+    })
+  end
+
+  def self.from_json(string)
+    data = JSON.load string
+    self.new(data['graveyard'], data['board'], data['move_manager'],
+      data['check_manager'], data['ui'], data['turn'], data['board_fen'])
+  end
+
+  and the only ones I should need are @board (once I get rid of @board_fen), graveyard, and turn.
+  I might have to use keyword arguments like graveyard: :data['graveyard']
+
+  I will do the same process as @board for @graveyard
+  When the game saves, I will update Game's @graveyard instance variable using a method called save_graveyard.
+  That will make a nested array that looks like this:
+  [[white graveyard goes here], [black graveyard goes here]]
+
+  Then when the game loads, I will have a method called load_graveyard that:
+  Sets the @graveyard instance variable to a new instance of Graveyard
+    @graveyard = Graveyard.new(self, graveyard[0], graveyard[1])
+    (Above, graveyard[0] should correspond to [white graveyard goes here], and graveyard[1] = [black graveyard goes here])
+
+I should then be able to call old_game.load_graveyard here:
+if response == 'load'
+      old_game = Game.load_game
+      old_game.load_graveyard
+      old_game.board_from_fen
+      old_game.play
+
+and hopefully all shall be well. I could also create a method that loads the graveyard and the board like:
+
+Game
+def self.load_instance_variable_elements
+  self.load_graveyard
+  self.board_from_fen
+end
+
+and turn it to 
+
+if response == 'load'
+      old_game = Game.load_game
+      old_game.load_instance_variable_elements
+      old_game.play
+
+Hopefully this should work!!
+(unless turn decides to give me grief, but I don't think it will.)
