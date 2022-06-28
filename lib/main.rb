@@ -79,4 +79,4 @@ def introduction
     puts "Or type '#{'load'.colorize(:blue)}' to load your previously saved game."
 end
 
-# full_game
+full_game
