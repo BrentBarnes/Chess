@@ -79,7 +79,7 @@ describe Cell do
 
     context 'when cell is empty' do
       it 'returns string e' do
-        expect(cell.cell_to_fen).to eq('e')
+        expect(cell.cell_to_fen).to eq('empty')
       end
     end
 
@@ -115,13 +115,13 @@ describe Cell do
 
     context 'when fen letter is K' do
       it 'updates the piece of the cell for a king' do
-        cell.cell_from_fen('K')
+        cell.cell_from_fen(King.new('white'))
         piece_object = cell.instance_variable_get(:@piece)
         expect(piece_object).to be_a King
       end
 
       it 'gets the correct color (white) for the piece' do
-        cell.cell_from_fen('K')
+        cell.cell_from_fen(King.new('white'))
         piece_object = cell.instance_variable_get(:@piece)
         color = piece_object.color
         expect(color).to eq('white')

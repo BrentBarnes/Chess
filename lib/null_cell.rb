@@ -12,9 +12,6 @@ class NullCell
   def clear_piece_and_content
   end
   
-  def array_to_chess_coord
-  end
-  
   def empty?
   end
 
@@ -38,9 +35,6 @@ class NullCell
   end
 
   def update_piece_and_content(piece_object)
-  end
-
-  def space_up
   end
 
   def all_spaces_in_direction(space, x_adj, y_adj)
@@ -79,5 +73,10 @@ class NullCell
   end
 
   def knight_cells
+  end
+
+  private
+
+  def array_to_chess_coord
   end
 end

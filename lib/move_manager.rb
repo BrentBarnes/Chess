@@ -5,9 +5,10 @@ class MoveManager
   attr_reader :game
   attr_accessor :board
 
-  def initialize(game, board)
+  def initialize(game, board, check_manager: game.check_manager)
     @game = game
     @board = board
+    @check_manager = check_manager
   end
 
   def valid_moves_for(cell_object)
@@ -56,16 +57,6 @@ class MoveManager
 
   def valid_moves_empty?(cell_object)
     valid_moves_for(cell_object).empty?
-  end
-
-  def all_directions
-    [:up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left]
-  end
-
-  def surrounding_cells(cell_object)
-    all_directions.filter_map do |direction|
-      cell_object.send(direction)
-    end
   end
 
   def valid_king_moves(cell_object)
@@ -140,4 +131,15 @@ class MoveManager
     valid_moves
   end
 
+  private
+
+  def all_directions
+    [:up, :up_right, :right, :down_right, :down, :down_left, :left, :up_left]
+  end
+
+  def surrounding_cells(cell_object)
+    all_directions.filter_map do |direction|
+      cell_object.send(direction)
+    end
+  end
 end

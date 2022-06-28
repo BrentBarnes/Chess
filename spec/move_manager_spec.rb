@@ -94,17 +94,18 @@ describe MoveManager do
 
   describe '#valid_moves_empty?' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game, game.board) }
-    let(:a1) { game.board.board[7][0] }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:move_manager) { described_class.new(game, board) }
+    let(:a1) { board.board[7][0] }
     before do
-      set_piece('white', Queen, 'a1')
+      board.place_piece(Queen.new('white'), 'a1')
     end
 
     context 'when the queen has no spaces to move' do
       it 'returns true' do
-        set_piece('white', Pawn, 'a2')
-        set_piece('white', Pawn, 'b2')
-        set_piece('white', Pawn, 'b1')
+        board.place_piece(Pawn.new('white'), 'a2')
+        board.place_piece(Pawn.new('white'), 'b2')
+        board.place_piece(Pawn.new('white'), 'b1')
         expect(move_manager.valid_moves_empty?(a1)).to eq(true)
       end
     end
@@ -119,14 +120,15 @@ describe MoveManager do
 
   describe '#valid_king_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game, game.board) }
-    let(:d3) { game.board.board[5][3] }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:move_manager) { described_class.new(game, board) }
     before do
-      set_piece('white', King, 'd3')
+      board.place_piece(King.new('white'), 'd3')
     end
 
     context 'when given a space containing a King piece' do
       it 'returns an array of valid moves' do
+        d3 = board.board[5][3]
         valid_strings = ['d4','e4','e3','e2','d2','c2','c3','c4']
         cells = strings_to_cells(valid_strings)
         expect(move_manager.valid_king_moves(d3)).to eq(valid_strings)
@@ -135,7 +137,8 @@ describe MoveManager do
 
     context 'when a friendly pawn is above the king' do
       it 'returns an array of valid moves excluding friendly space' do
-        set_piece('white', Pawn, 'd4')
+        d3 = board.board[5][3]
+        board.place_piece(Pawn.new('white'), 'd4')
         valid_strings = ['e4','e3','e2','d2','c2','c3','c4']
 
         expect(move_manager.valid_king_moves(d3)).to eq(valid_strings)
@@ -145,7 +148,7 @@ describe MoveManager do
     context 'when king is in the bottom left corner of the board a1' do
       it 'returns an array of valid moves excluding out of bounds' do
         set_piece('white', King, 'a1')
-        a1 = game.board.board[7][0]
+        a1 = board.board[7][0]
         valid_strings = ['a2','b2','b1']
 
         expect(move_manager.valid_king_moves(a1)).to eq(valid_strings)
@@ -155,14 +158,15 @@ describe MoveManager do
 
   describe '#valid_rook_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game, game.board) }
-    let(:d4) { game.board.board[4][3] }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:move_manager) { described_class.new(game, board) }
     before do
-      set_piece('white', Rook, 'd4')
+      board.place_piece(Rook.new('white'), 'd4')
     end
 
     context 'when rook is at d4 with no obstructions' do
       it 'returns all valid moves' do
+        d4 = board.board[4][3]
         valid_moves = ['d5','d6','d7','d8','e4','f4','g4','h4','d3','d2','d1','c4','b4','a4']
         expect(move_manager.valid_rook_moves(d4)).to eq(valid_moves)
       end
@@ -170,10 +174,11 @@ describe MoveManager do
 
     context 'when rook is at d4 with obstructions' do
       it 'returns all valid moves' do
-        set_piece('white', Pawn,'d7')
-        set_piece('black', Pawn,'g4')
-        set_piece('black', Pawn,'d3')
-        set_piece('white', Pawn,'c4')
+        d4 = board.board[4][3]
+        board.place_piece(Pawn.new('white'), 'd7')
+        board.place_piece(Pawn.new('black'), 'g4')
+        board.place_piece(Pawn.new('black'), 'd3')
+        board.place_piece(Pawn.new('white'), 'c4')
         valid_moves = ['d5','d6','e4','f4','g4','d3']
         expect(move_manager.valid_rook_moves(d4)).to eq(valid_moves)
       end
@@ -182,10 +187,11 @@ describe MoveManager do
 
   describe '#valid_knight_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game, game.board) }
-    let(:d2) { game.board.board[6][3] }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:move_manager) { described_class.new(game, board) }
+    let(:d2) { board.board[6][3] }
     before do
-      set_piece('white', Knight, 'd2')
+      board.place_piece(Knight.new('white'), 'd2')
     end
 
     context 'when given a space containing a Knight piece' do
@@ -197,10 +203,10 @@ describe MoveManager do
 
     context 'when obstacles block Knight spaces' do
       it 'returns an array of valid moves excluding obstacles' do
-        set_piece('white', Pawn,'f3')
-        set_piece('white', Pawn,'b3')
-        set_piece('black', Pawn,'f1')
-        set_piece('black', Pawn,'c4')
+        board.place_piece(Pawn.new('white'), 'f3')
+        board.place_piece(Pawn.new('white'), 'b3')
+        board.place_piece(Pawn.new('black'), 'f1')
+        board.place_piece(Pawn.new('black'), 'c4')
         valid_moves = ['e4','f1','b1','c4']
 
         expect(move_manager.valid_knight_moves(d2)).to eq(valid_moves)
@@ -210,10 +216,11 @@ describe MoveManager do
 
   describe '#valid_bishop_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game, game.board) }
-    let(:d4) { game.board.board[4][3] }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:move_manager) { described_class.new(game, board) }
+    let(:d4) { board.board[4][3] }
     before do
-      set_piece('white', Bishop, 'd4')
+      board.place_piece(Bishop.new('white'), 'd4')
     end
 
     context 'when bishop is at d4 with no obstructions' do
@@ -225,10 +232,10 @@ describe MoveManager do
 
     context 'when bishop is at d4 with obstructions' do
       it 'returns all valid moves' do
-        set_piece('black', Pawn,'f6')
-        set_piece('white', Pawn,'f2')
-        set_piece('black', Pawn,'a1')
-        set_piece('white', Pawn,'c5')
+        board.place_piece(Bishop.new('black'), 'f6')
+        board.place_piece(Bishop.new('white'), 'f2')
+        board.place_piece(Bishop.new('black'), 'a1')
+        board.place_piece(Bishop.new('white'), 'c5')
         valid_moves = ['e5','f6','e3','c3','b2','a1']
         expect(move_manager.valid_bishop_moves(d4)).to eq(valid_moves)
       end
@@ -237,10 +244,11 @@ describe MoveManager do
 
   describe '#valid_queen_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game, game.board) }
-    let(:d4) { game.board.board[4][3] }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:move_manager) { described_class.new(game, board) }
+    let(:d4) { board.board[4][3] }
     before do
-      set_piece('white', Queen, 'd4')
+      board.place_piece(Queen.new('white'), 'd4')
     end
 
     context 'when queen is at d4 with no obstructions' do
@@ -256,14 +264,15 @@ describe MoveManager do
 
     context 'when queen is at d4 with obstructions' do
       it 'returns all valid moves' do
-        set_piece('white', Pawn,'d7')
-        set_piece('white', Pawn,'g7')
-        set_piece('black', Pawn,'g4')
-        set_piece('black', Pawn,'e3')
-        set_piece('black', Pawn,'d3')
-        set_piece('white', Pawn,'a1')
-        set_piece('white', Pawn,'c4')
-        set_piece('black', Pawn,'b6')
+        board.place_piece(Pawn.new('white'), 'd7')
+        board.place_piece(Pawn.new('white'), 'g7')
+        board.place_piece(Pawn.new('black'), 'g4')
+        board.place_piece(Pawn.new('black'), 'e3')
+        board.place_piece(Pawn.new('black'), 'd3')
+        board.place_piece(Pawn.new('white'), 'a1')
+        board.place_piece(Pawn.new('white'), 'c4')
+        board.place_piece(Pawn.new('black'), 'b6')
+
         valid_moves = [
           'd5','d6','e5','f6','e4','f4','g4',
           'e3','d3','c3','b2','c5','b6'
@@ -275,12 +284,13 @@ describe MoveManager do
 
   describe '#valid_pawn_moves' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game, game.board) }
-    let(:d2) { game.board.board[6][3] }
-    let(:d7) { game.board.board[1][3] }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:move_manager) { described_class.new(game, board) }
+    let(:d2) { board.board[6][3] }
+    let(:d7) { board.board[1][3] }
     before do
-      set_piece('white', Pawn, 'd2')
-      set_piece('black', Pawn, 'd7')
+      board.place_piece(Pawn.new('white'), 'd2')
+      board.place_piece(Pawn.new('black'), 'd7')
     end
 
     context 'when a white pawn is on d2 with no obstructions' do
@@ -292,8 +302,8 @@ describe MoveManager do
 
     context 'when a white pawn is on d2 with two enemies diagonally' do
       it 'returns all 4 possible spaces' do
-        set_piece('black', Pawn, 'c3')
-        set_piece('black', Pawn, 'e3')
+        board.place_piece(Pawn.new('black'), 'c3')
+        board.place_piece(Pawn.new('black'), 'e3')
         valid_moves = ['d3','d4','c3','e3']
         expect(move_manager.valid_pawn_moves(d2)).to eq(valid_moves)
       end
@@ -301,8 +311,8 @@ describe MoveManager do
 
     context 'when a white pawn is on d2 with a few obstructions' do
       it 'returns valid moves' do
-        set_piece('black', Pawn, 'd4')
-        set_piece('black', Pawn, 'c3')
+        board.place_piece(Pawn.new('black'), 'd4')
+        board.place_piece(Pawn.new('black'), 'c3')
         valid_moves = ['d3','c3']
         expect(move_manager.valid_pawn_moves(d2)).to eq(valid_moves)
       end
@@ -311,6 +321,7 @@ describe MoveManager do
     context 'when a white pawn is on h3 with obstructions' do
       let(:h3) { game.board.board[5][7] }
       it 'returns valid moves' do
+        board.place_piece(Rook.new('white'), 'h4')
         set_piece('white', Rook, 'h4')
         valid_moves = []
         expect(move_manager.valid_pawn_moves(h3)).to eq(valid_moves)
@@ -333,8 +344,8 @@ describe MoveManager do
     context 'when a black pawn is on d7 with two enemies diagonally' do
       it 'returns all 4 possible spaces' do
         game.instance_variable_set(:@turn, 2)
-        set_piece('white', Pawn, 'c6')
-        set_piece('white', Pawn, 'e6')
+        board.place_piece(Pawn.new('white'), 'c6')
+        board.place_piece(Pawn.new('white'), 'e6')
         valid_moves = ['d6','d5', 'c6','e6']
         expect(move_manager.valid_pawn_moves(d7)).to eq(valid_moves)
       end
@@ -343,8 +354,8 @@ describe MoveManager do
     context 'when a black pawn is on d7 with a few obstructions' do
       it 'returns valid moves' do
         game.instance_variable_set(:@turn, 2)
-        set_piece('white', Pawn, 'c6')
-        set_piece('black', Pawn, 'd6')
+        board.place_piece(Pawn.new('white'), 'c6')
+        board.place_piece(Pawn.new('black'), 'd6')
         valid_moves = ['c6']
         expect(move_manager.valid_pawn_moves(d7)).to eq(valid_moves)
       end
@@ -362,10 +373,11 @@ describe MoveManager do
 
   describe '#valid_moves_in_direction' do
     let(:game) { Game.new }
-    subject(:move_manager) { described_class.new(game, game.board) }
-    let(:d5) { game.board.board[3][3] }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:move_manager) { described_class.new(game, board) }
+    let(:d5) { board.board[3][3] }
     before do
-      set_piece('white', Rook, 'd5')
+      board.place_piece(Rook.new('white'), 'd5')
     end
 
     context 'when given cell d5' do
@@ -377,7 +389,7 @@ describe MoveManager do
 
     context 'when given cell d5 and friendly on d8' do
       it 'returns all valid spaces in the up direction' do
-        set_piece('white', Pawn, 'd8')
+        board.place_piece(Pawn.new('white'), 'd8')
         valid_cells = ['d6','d7']
         expect(move_manager.valid_moves_in_direction(d5, :up)).to eq(valid_cells)
       end
@@ -385,7 +397,7 @@ describe MoveManager do
 
     context 'when given cell d5 and enemy on d7' do
       it 'returns all valid spaces in the up direction' do
-        set_piece('black', Pawn, 'd7')
+        board.place_piece(Pawn.new('black'), 'd7')
         valid_cells = ['d6','d7']
         expect(move_manager.valid_moves_in_direction(d5, :up)).to eq(valid_cells)
       end
@@ -400,7 +412,7 @@ def set_piece(color, piece_type, coordinate)
 end
 
 def cell_at(coordinate)
-  game.cell_at(coordinate)
+  game.board.cell_at(coordinate)
 end
 
 def strings_to_cells(strings)

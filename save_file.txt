@@ -1,1 +1,1 @@
-{"graveyard":[[],["♙"]],"board":"rnbqkbnr/ppp2ppp/8/3Pp3/8/8/PPPP1PPP/RNBQKBNR","move_manager":"#<MoveManager:0x000055c72001fad0>","check_manager":"#<CheckManager:0x000055c72001fa08>","ui":"#<UI:0x000055c72001f918>","turn":5,"board_fen":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"}
+{"graveyard":[[],[]],"board":"rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR","move_manager":"#<MoveManager:0x0000562692d4efe0>","check_manager":"#<CheckManager:0x0000562692d4efb8>","ui":"#<HumanVsHuman:0x0000562692d4ef68>","turn":3,"board_fen":null}

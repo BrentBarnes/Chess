@@ -1,7 +1,7 @@
 
 require_relative 'main'
 
-class Board
+class TestBoard
 
   attr_accessor :board, :cell, :p1_graveyard, :p2_graveyard, :fen_string
   attr_reader :game, :graveyard, :move_manager
@@ -14,13 +14,10 @@ class Board
   end
 
   def create_board
-    i = 0
     array = Array.new(8) {Array.new(8)}
     array.each_with_index do |row, row_index|
       row.each_with_index do |space, column_index|
         array[row_index][column_index] = Cell.new(row_index, column_index, game, self)
-        array[row_index][column_index].cell_from_fen(fen_to_pieces[i])
-        i += 1
       end
     end
   end
@@ -50,22 +47,8 @@ class Board
     graveyard.display_graveyard('black')
   end
 
-  def place_piece(piece_object, coordinate)
-    space = cell_at(coordinate)
-    space.update_piece_and_content(piece_object)
-  end
-
   def cell_at(coordinate)
     board.flatten.find { |space| space.name == coordinate }
-  end
-
-  def find_pieces(friendly_or_enemy)
-    if friendly_or_enemy == 'friendly'
-    cells = board.flatten.filter_map { |cell| cell if cell.same_team_on_space? }
-    else
-      cells = board.flatten.filter_map { |cell| cell if cell.enemy_team_on_space? }
-    end
-    cells.sort_by(&:name)
   end
 
   def get(x,y)
@@ -77,6 +60,11 @@ class Board
     valid_row = coordinate[0].between?('a','h')
     valid_column = coordinate[1].between?('1','8')
     valid_length && valid_row && valid_column ? true : false
+  end
+  
+  def place_piece(piece_object, coordinate)
+    space = cell_at(coordinate)
+    space.update_piece_and_content(piece_object)
   end
 
   def find_king(friendly_or_enemy)
@@ -97,6 +85,15 @@ class Board
     active_team = game.active_team.downcase
 
     king_on_space && piece_color == active_team
+  end
+
+  def find_pieces(friendly_or_enemy)
+    if friendly_or_enemy == 'friendly'
+    cells = board.flatten.filter_map { |cell| cell if cell.same_team_on_space? }
+    else
+      cells = board.flatten.filter_map { |cell| cell if cell.enemy_team_on_space? }
+    end
+    cells.sort_by(&:name)
   end
 
   def board_to_fen

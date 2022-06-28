@@ -75,40 +75,9 @@ describe Board do
     end
   end
 
-  describe '#set_pieces_on_board' do
-    let(:game) { Game.new }
-    subject(:board) { described_class.new(game, game.graveyard, game.move_manager) }
-    before do
-      board.set_pieces_on_board
-    end
-
-    context 'after placing all of the pieces on the board' do
-      it 'sets first black piece (black rook) on a8' do
-        space = board.board[0][0]
-        expect(space.content).to eq(space.color_content(' ♖ '))
-      end
-
-      it 'sets last black piece (black pawn) on h7' do
-        space = board.board[1][7]
-        expect(space.content).to eq(space.color_content(' ♙ '))
-      end
-
-      it 'sets first white piece (white pawn) on a2' do
-        space = board.board[6][0]
-        expect(space.content).to eq(space.color_content(' ♟ '))
-      end
-
-      it 'sets last white piece (white rook) on h8' do
-        space = board.board[7][7]
-        white_rook =  "\u265C".encode('utf-8')
-        expect(space.content).to eq(space.color_content(' ♜ '))
-      end
-    end
-  end
-
   describe '#find_king' do
     let(:game) { Game.new }
-    subject(:board) { described_class.new(game, game.graveyard, game.move_manager) }
+    subject(:board) { TestBoard.new(game, game.graveyard, game.move_manager) }
     before do
       board.place_piece(King.new('black'), 'b3')
       board.place_piece(King.new('white'), 'g7')
@@ -177,7 +146,7 @@ describe Board do
 
   describe '#find_pieces' do
     let(:game) { Game.new }
-    subject(:board) { described_class.new(game, game.graveyard, game.move_manager) }
+    subject(:board) { TestBoard.new(game, game.graveyard, game.move_manager) }
     before do
       board.place_piece(Pawn.new('black'), 'c7')
       board.place_piece(Bishop.new('black'), 'd7')
@@ -236,7 +205,7 @@ describe Board do
 
   describe '#board_to_fen' do
     let(:game) { Game.new }
-    subject(:board) { described_class.new(game, game.graveyard, game.move_manager) }
+    subject(:board) { TestBoard.new(game, game.graveyard, game.move_manager) }
     before do
       board.place_piece(Pawn.new('black'), 'c7')
       board.place_piece(Bishop.new('black'), 'd7')
@@ -246,73 +215,10 @@ describe Board do
       board.place_piece(King.new('white'), 'e1')
     end
 
-    context 'when board has 6 pieces on it', focus: true do
+    context 'when board has 6 pieces on it' do
       it 'returns a representation of the board in fen notation' do
-        # fen_board = [['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-        #             ['r', 'e', 'p', 'b', 'e', 'e', 'e', 'e'],
-        #             ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-        #             ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-        #             ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-        #             ['e', 'e', 'e', 'e', 'e', 'e', 'e', 'e'],
-        #             ['e', 'Q', 'e', 'N', 'e', 'e', 'e', 'e'],
-        #             ['e', 'e', 'e', 'e', 'K', 'e', 'e', 'e']]
         fen_board = "8/r1pb4/8/8/8/8/1Q1N4/4K3"
-        
         expect(board.board_to_fen).to eq(fen_board)
-      end
-    end
-  end
-
-  describe '#board_from_fen' do
-    let(:game) { Game.new }
-    subject(:board) { described_class.new(game, game.graveyard, game.move_manager) }
-    let(:fen_board) { ['r', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                      'r', 'e', 'p', 'b', 'e', 'e', 'e', 'e',
-                      'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                      'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                      'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                      'e', 'e', 'e', 'e', 'e', 'e', 'e', 'e',
-                      'e', 'Q', 'e', 'N', 'e', 'e', 'e', 'e',
-                      'e', 'e', 'e', 'e', 'K', 'e', 'e', 'e'] }
-
-    before do
-      board.board_from_fen(fen_board)
-    end
-
-    context 'when board is loaded from fen' do
-      it 'piece at a8 is a rook' do
-        a8 = board.board[0][0]
-        expect(a8.piece).to be_a Rook
-      end
-
-      it 'rook color at a8 is black' do
-        a8 = board.board[0][0]
-        piece = a8.piece
-        expect(piece.color).to eq('black')
-      end
-
-      it 'piece at a7 is a rook' do
-        a7 = board.board[1][0]
-        piece = a7.piece
-        expect(piece.color).to eq('black')
-      end
-
-      it 'piece at b8 is an EmptySpace' do
-        b8 = board.board[0][1]
-        piece = b8.piece
-        expect(piece).to be_a EmptySpace
-      end
-
-      it 'piece at d2 is a Knight' do
-        d2 = board.board[6][3]
-        piece = d2.piece
-        expect(piece).to be_a Knight
-      end
-
-      it 'Knight at d2 is white' do
-        d2 = board.board[6][3]
-        piece = d2.piece
-        expect(piece.color).to eq('white')
       end
     end
   end

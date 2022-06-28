@@ -21,7 +21,7 @@ class Graveyard
     if color == 'white'
       puts "                              #{white_graveyard.join(' ')}"
     else
-      puts "                              #{black_graveyard.join(' 0')}"
+      puts "                              #{black_graveyard.join(' ')}"
     end
   end
 

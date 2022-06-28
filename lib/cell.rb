@@ -15,15 +15,6 @@ class Cell
     @piece = EmptySpace.new
   end
 
-  def color_content(string)
-    if row % 2 == 0 && column % 2 == 0 ||
-      row % 2 == 1 && column % 2 == 1
-      string.colorize(background: :blue)
-    else
-      string.colorize(background: :black)
-    end
-  end
-
   def update_piece_and_content(piece_object)
     @piece = piece_object
     @content = " #{piece_object.to_s} "
@@ -35,8 +26,48 @@ class Cell
     @piece = EmptySpace.new
   end
 
+  def color_content(string)
+    if row % 2 == 0 && column % 2 == 0 ||
+      row % 2 == 1 && column % 2 == 1
+      string.colorize(background: :blue)
+    else
+      string.colorize(background: :black)
+    end
+  end
+
+  def empty?
+    piece.is_a?(EmptySpace)
+  end
+
+  def occupied?
+    if empty? || piece.is_a?(RedCircle)
+     false
+    else
+      true
+    end
+  end
+
+  def same_team_on_space?
+    piece.same_team?(game.player1_turn?)
+  end
+
+  def enemy_team_on_space?
+    piece.enemy_team?(game.player1_turn?)
+  end
+
   def send_piece_to_graveyard
     game.graveyard.send_piece_to_graveyard(piece)
+  end
+
+  def in_bounds?
+    valid_length = name.length == 2
+    valid_row = name[0].between?('a','h')
+    valid_column = name[1].between?('1','8')
+    valid_length && valid_row && valid_column ? true : false
+  end
+
+  def out_of_bounds?
+    in_bounds? == false ? true : false
   end
   
   def cell_to_fen
@@ -67,50 +98,7 @@ class Cell
   def cell_from_fen(piece_object)
     update_piece_and_content(piece_object)
   end
-
-  def array_to_chess_coord
-    chess_row = (1 + (7 - row)).to_s
-    chess_column = (column + 97).chr
-    chess_column + chess_row
-  end
   
-  def empty?
-    piece.is_a?(EmptySpace)
-  end
-
-  def occupied?
-    if empty? || piece.is_a?(RedCircle)
-     false
-    else
-      true
-    end
-  end
-
-  #does this work better in Cell or Board
-  def in_bounds?
-    valid_length = name.length == 2
-    valid_row = name[0].between?('a','h')
-    valid_column = name[1].between?('1','8')
-    valid_length && valid_row && valid_column ? true : false
-  end
-
-  def out_of_bounds?
-    in_bounds? == false ? true : false
-  end
-
-  def same_team_on_space?
-    piece.same_team?(game.player1_turn?)
-  end
-
-  def enemy_team_on_space?
-    piece.enemy_team?(game.player1_turn?)
-  end
-
-  def space_up
-    cell_above = alter_name(name,0,1)
-    board.cell_at(cell_above)
-  end
-
   def up
     if piece.to_s == '♙'
       board.get(column, row + 1)
@@ -180,5 +168,13 @@ class Cell
     elsif piece.to_s == '♙'
       row == 1 ? true : false
     end
+  end
+
+  private
+
+  def array_to_chess_coord
+    chess_row = (1 + (7 - row)).to_s
+    chess_column = (column + 97).chr
+    chess_column + chess_row
   end
 end

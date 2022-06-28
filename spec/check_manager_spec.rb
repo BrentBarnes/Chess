@@ -5,10 +5,11 @@ describe CheckManager do
 
   describe '#valid_moves_for_king' do
     let(:game) { Game.new }
-    subject(:check_manager) { described_class.new(game, game.board, game.move_manager)}
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:check_manager) { described_class.new(game, board, game.move_manager)}
     before do
-      game.board.place_piece(King.new('black'), 'b8')
-      game.board.place_piece(King.new('white'), 'g7')
+      board.place_piece(King.new('black'), 'b8')
+      board.place_piece(King.new('white'), 'g7')
     end
 
     context 'when white turn and friendly king on g7' do
@@ -44,7 +45,7 @@ describe CheckManager do
 
   describe '#valid_attacks_for_team' do
     let(:game) { Game.new }
-    let(:board) { Board.new(game, game.move_manager) }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
     subject(:check_manager) { described_class.new(game, board, game.move_manager)}
     before do
       board.place_piece(Pawn.new('black'), 'c7')
@@ -98,7 +99,7 @@ describe CheckManager do
 
   describe '#active_king_in_harms_way?' do
     let(:game) { Game.new }
-    let(:board) { Board.new(game, game.move_manager) }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
     subject(:check_manager) { described_class.new(game, board, game.move_manager)}
 
     context 'when black pawn threatens white king' do
@@ -120,7 +121,7 @@ describe CheckManager do
 
   describe '#moving_into_check?' do
     let(:game) { Game.new }
-    let(:board) { Board.new(game, game.move_manager) }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
     subject(:check_manager) { described_class.new(game, board, game.move_manager)}
 
     context 'when black rook threatens cell c6' do
@@ -141,12 +142,19 @@ describe CheckManager do
       end
     end
 
-
+    context 'when king is hiding a threatened move' do
+      it 'returns true' do
+        board.place_piece(King.new('white'), 'c5')
+        board.place_piece(Queen.new('black'), 'd6')
+        from_cell = board.board[3][2]
+        expect(check_manager.moving_into_check?(from_cell, 'b4')).to be true
+      end
+    end
   end
 
   describe '#active_team_check?' do
     let(:game) { Game.new }
-    let(:board) { Board.new(game, game.move_manager) }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
     subject(:check_manager) { described_class.new(game, board, game.move_manager)}
 
     context 'when black pawn threatens white king' do
@@ -177,7 +185,7 @@ describe CheckManager do
 
   describe '#active_team_checkmate?' do
     let(:game) { Game.new }
-    let(:board) { Board.new(game, game.move_manager) }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
     subject(:check_manager) { described_class.new(game, board, game.move_manager)}
 
     context 'when white king is checkmated' do
@@ -204,6 +212,45 @@ describe CheckManager do
         board.place_piece(Pawn.new('white'), 'b1')
         board.place_piece(King.new('white'), 'a1')
         expect(check_manager.active_team_check?).to be false
+      end
+    end
+  end
+
+  describe '#draw?' do
+    let(:game) { Game.new }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:check_manager) { described_class.new(game, board, game.move_manager)}
+    before do
+      board.place_piece(King.new('white'), 'b2')
+      board.place_piece(King.new('black'), 'h5')
+    end
+
+    context 'when there are only two kings left' do
+      it 'returns true' do
+        expect(check_manager.draw?).to be true
+      end
+    end
+  end
+
+  describe '#capturing_threatens_king?' do
+    let(:game) { Game.new }
+    let(:board) { TestBoard.new(game, game.graveyard, game.move_manager)}
+    subject(:check_manager) { described_class.new(game, board, game.move_manager)}
+    before do
+      board.place_piece(King.new('white'), 'a1')
+      board.place_piece(Pawn.new('black'), 'b2')
+    end
+
+    context 'when taking pawn on b2' do
+      it 'returns true' do
+        board.place_piece(Pawn.new('black'), 'a3')
+        expect(check_manager.capturing_threatens_king?('b2')).to be true
+      end
+    end
+
+    context 'when taking pawn on b2 without a threat' do
+      it 'returns false' do
+        expect(check_manager.capturing_threatens_king?('b2')).to be false
       end
     end
   end
