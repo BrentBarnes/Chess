@@ -1,7 +1,7 @@
 
 <h1><span style="text-decoration: underline;"><strong>Chess</strong></span></h1>
 <p>This has been a long and challenging project. It took me two and a half months to complete, but I am so proud to have finished. The journey was full of ups and downs, and it often felt like taking two steps back to take three steps forward.</p>
-<p>While I can say that this program was built from scratch, I would also like to recognize that I could not have done it without <strong>The Odin Project</strong> community <strong>Discord</strong> server. <strong>Josh</strong>, <strong>Roli</strong>, and <strong>Crespire</strong> voluntarily messaged with me back and forth for hours at a time. Their help genuinely made all the difference, and for that I am endlessly grateful!</p>
+<p>While I can say that this program was built from scratch, I would also like to recognize that I could not have done it without <strong>The Odin Project</strong> community <strong>Discord</strong> server. <strong>Josh</strong>, <strong>Roli</strong>, <strong>Crespire</strong>, and many others voluntarily messaged with me back and forth for hours at a time. Their help genuinely made all the difference, and for that I am endlessly grateful!</p>
 <p>&nbsp;</p>
 <h2><span style="text-decoration: underline;"><strong>Features of Chess</strong></span></h2>
 <ul>
