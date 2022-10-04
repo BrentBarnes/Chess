@@ -40,7 +40,7 @@ While I can say that this program was built from scratch, I would also like to r
 * Pawn promotion
 * Other fancy game moves
 
-### The Biggest Challenger
+### The Biggest Challenge
 By far, the biggest challenge was wrapping my mind around <strong>Object Oriented Design priciples</strong>. At first, I tried to write my Ruby code the same way I had written my procedural Javascript code. I thought I was close to the end of the project when I was able to move pieces, but I got stuck because my classes were so jumbled up.
 
 When I went to the TOP Discord multiple great folks said that my program was <strong>begging</strong> for more classes and my classes were <strong>begging</strong> to be smarter. I think I had <strong>five classes</strong> handling <strong>EVERYTHING</strong>. That's when someone mentioned that they had <strong>over thirty classes</strong> in their solution to Chess. Obviously I was doing something inefficiently.</p>
