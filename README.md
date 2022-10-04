@@ -35,10 +35,10 @@ While I can say that this program was built from scratch, I would also like to r
 
 ### Things to Add Later
 
-Castling
-En Passant
-Pawn promotion
-Other fancy game moves</li
+* Castling
+* En Passant
+* Pawn promotion
+* Other fancy game moves
 
 ### The Biggest Challenger
 By far, the biggest challenge was wrapping my mind around <strong>Object Oriented Design priciples</strong>. At first, I tried to write my Ruby code the same way I had written my procedural Javascript code. I thought I was close to the end of the project when I was able to move pieces, but I got stuck because my classes were so jumbled up.
