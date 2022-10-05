@@ -8,6 +8,8 @@ While I can say that this program was built from scratch, I would also like to r
 
 ![Video Demo](chess.gif)
 
+<strong>Click here for a [Live Demo](https://replit.com/@brenttbarness/Chess-Ruby-CLI-Game?v=1)!</strong>
+
 ### Functionality
 
 * Game Modes

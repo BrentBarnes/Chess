@@ -13,20 +13,4 @@ class ComputerVsComputer < UI
   def move_piece
     computer_move_piece
   end
-
-  # def game_over_sequence
-  #   system('clear')
-  #   board.print_board
-  #   game_over_text
-  # end
-
-  # def game_over_text
-  #   if check_manager.draw?
-  #     puts
-  #     puts "It was a draw!"
-  #   else
-  #     puts
-  #     puts "Game Over! #{game.non_active_team} Wins!"
-  #   end
-  # end
 end
