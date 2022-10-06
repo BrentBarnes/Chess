@@ -34,6 +34,7 @@ While I can say that this program was built from scratch, I would also like to r
 * The Cell class makes use of the Null Object Design Pattern
 * <strong>Factories</strong> are used for piece creation
 * Slight <strong>polymorphism</strong> is used for the different game modes
+* Supported by 127 RSpec tests
 
 ### Things to Add Later
 
